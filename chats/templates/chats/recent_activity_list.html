@@ -1,0 +1,284 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %} Recent Activity {% endblock %}
+
+
+
+
+{% block content %}
+
+
+
+
+
+
+
+	<div class="row">
+		<div class="col-xs-1"> </div>
+
+
+		<div class="col-xs-10">
+
+			<div class="recent_activity_posts_list">
+			{% for post in object_list %}
+			
+
+
+			<div class="user_post">
+
+			<a href="{{post.message.user.profile.get_absolute_url}}" class="pull-left">
+				<img class="img-circle" src="{{post.message.user.profile.get_absolute_url_for_avatar}}" height="30px" width="30px">
+
+			</a>
+
+			<div class="user_post_content">
+
+			<a href="{{post.message.user.profile.get_absolute_url}}"><span class="username_small">{{post.message.user.username}}</span></a>
+
+				<a href="
+
+
+				{% if post.message.chatgroup %}
+				{{post.message.chatgroup.get_absolute_url}}
+				{% else %}
+
+				#
+
+				{% endif %}
+
+
+				"><span class="chat_name_small">{{post.message.chatgroup.name}}</span> </a>
+
+			<a href="{{post.message.get_absolute_url_room}}"> <span class="context">Context</span> </a>
+
+			<p id="user_message_{{post.id}}" class="user_message">
+
+			{% if post.message.get_message_type == "text" %}
+
+			{{post.message.short_text|urlize}}
+
+			{% if post.message.longer_than_144 %}
+
+			<a href="#" data-id="{{post.id}}" class="display_rest_of_post" style="color: #999 !important; "> more </a>
+
+			{% endif %}
+			<!-- When making the post shorter, how to deal with the more button --> 
+
+			{% else %}
+
+			<img class="uploaded_image_post uploaded_chat_image" src="{{post.message.photo.url}}">
+
+			{% endif %}
+
+
+
+
+			</p>
+
+
+			<div class="likes_comments">
+
+
+				<!--<span class="heart glyphicon glyphicon-heart"> </span>-->
+
+
+				<button type="button" name="{{post.id}}" class="post_like_button fa" >
+
+								{% if request.user in post.likers.all %}
+
+								<i class="post_like red_heart fa fa-heart" aria-hidden="true"></i>
+
+								
+
+								{% else %}
+
+								<i class="post_like fa fa-heart-o" aria-hidden="true"></i>
+
+								
+
+								{% endif %}
+
+				</button>
+
+
+
+				<a data-id="{{post.id}}" class="show_who_liked" href="#" role="button"><span id="{{post.id}}" style="margin-left: 2px;" class="number_of_likes"> {{post.get_number_of_likes}}</span> likes</a>
+
+
+
+
+				<a data-id={{post.id}} class="input_link" id="input_link_{{post.id}}" role="button" href="#"  ><span class="comment_icon glyphicon glyphicon-comment">  </span></a>
+				<span id="number_of_comments_{{post.id}}">{{post.get_number_of_comments}}</span>
+
+
+				<span class="time_uploaded"> {{post.timestamp}} </span>
+
+				<!--
+				<div class="comments">
+				{% for comment in post.postcomment_set.all %}
+
+
+					<span class="username_small">{{comment.user.username}}</span>
+					<span class="user_message"> {{post.message.text}} </span>
+
+
+
+
+
+				{%endfor%}
+
+				</div>
+				-->
+
+
+
+
+				<div id="post_comments_{{post.id}}" class="post_comments"> 
+
+				{% for post_comment in post.postcomment_set.all|dictsort:"timestamp"|slice:"0:2" %}
+
+
+
+				
+				<div class="a_comment">  
+
+
+					<a href="{{post_comment.user.profile.get_absolute_url}}"><span class="username_comment_small">{{post_comment.user.username}}</span> </a>
+
+
+					<span class="comment_text"> {{post_comment.text}}</span>
+
+					<!-- The like button should be here -->
+
+
+					<button id="post_commnet_like_button_{{post_comment.id}}" type="button" name="{{post_comment.id}}" class="post_comment_like_button fa" >
+
+								{% if request.user in post_comment.likers.all %}
+
+								<i class="post_comment_like red_heart fa fa-heart" aria-hidden="true"></i>
+
+								
+
+								{% else %}
+
+								<i class="post_comment_like fa fa-heart-o" aria-hidden="true"></i>
+
+								
+
+								{% endif %}
+
+					</button>
+
+
+
+				<!--<a data-id="{{post_comment.id}}" class="" href="#" role="button">--><span id="post_comment_{{post_comment.id}}" style="margin-left: 2px;" class="number_of_likes"> {{post_comment.get_number_of_likes}}</span><!--</a>-->
+
+
+
+
+
+
+				</div>
+
+
+				{% endfor%}
+
+
+				</div>
+				{% if post.get_number_of_comments > 2 %}
+				<a id="load_more_{{post.id}}" data-id="{{post.id}}" class="load_more_comments" href="#" role="button"> Load more comments </a>
+				{% endif %}
+				<hr class="divides_comments_from_input">
+
+				<div class="input_a_comment">
+
+					<form data-id="{{post.id}}" class="add_a_comment_form" >
+
+						<div class="form-group">
+
+							<input id="input_comment_{{post.id}}" type="text" name="comment_text" class="comment_input form_control" placeholder="Add a comment">
+
+						</div>
+
+
+					</form>
+
+
+				</div>
+
+
+
+
+
+
+				<!--<hr> -->
+
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+
+
+
+			</div>
+
+
+
+			{% endfor %}
+
+		</div>		
+		</div>
+		<div class="col-xs-1"> </div>
+
+
+	</div>
+
+
+
+	<div class="modal fade post_likers" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+		<!-- A container for the likers of a specific post --> 
+
+	</div>
+
+
+<!--
+
+<img class="img-circle" src="{{object.avatar.url}}" height="200px">
+
+
+
+Username: {{object.user.username}} <hr>
+About the user: {{object.about}} <hr>
+The number of followers {{object.get_number_of_followers}} <hr>
+The number of following {{object.get_number_of_following}} <hr>
+The number of chatgroups following {{chatgroups_following}}  <hr>
+
+
+
+-->
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+

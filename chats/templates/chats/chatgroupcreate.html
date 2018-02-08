@@ -1,0 +1,69 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %} Create a new ChatGroup {% endblock %}
+
+
+
+
+{% block content%}
+
+
+
+
+
+    <h2 class="new_group_page_title">New Chat Group</h2>
+
+
+
+
+
+
+  <div class="new_chatgroup">
+	<form method="post" enctype="multipart/form-data">{% csrf_token %}
+
+
+
+
+
+			{% for field in form %}
+			<div class="form-group">
+      <p>
+
+        {{ field }}
+
+
+
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+		</div>
+    {% endfor %}
+
+    <div class="input_new_chatgroup form-group">
+
+      <button class="upload_chatgroup_photo btn btn-primary" type="button" class="btn btn-primary"> Upload a Photo </button>
+      <span class="photo_location">  </span>
+
+    </div>
+
+    <div class="input_new_chatgroup form-group">
+
+	   <button type="submit" class="button_black_bg btn btn-primary">Create</button>
+
+    </div> 
+
+
+
+
+</form>
+</div>
+
+
+{% endblock %}
+
+
+
+

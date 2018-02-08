@@ -1,0 +1,73 @@
+{% extends "chats/base.html" %}
+
+{% block title %} Trending Topics {% endblock %}
+
+
+{% block content %}
+
+	<div class="row">
+
+		<div class="col-xs-1">
+
+
+
+
+		 </div>
+		<div class="col-xs-10">
+
+		<div class="selection">
+
+		<a href="{% url "trending-globalchats" %}"> <span class="select1">Global Chats</span></a>
+		<a href="{% url "trending-topics" %}"><span class="select2">Topics</span> </a>
+		<a href="{% url "trending-localchats" %}"><span class="select3">Local Chats</span> </a>
+		</div>
+
+		</div>
+
+
+		
+
+		<div class="col-xs-1"> </div>
+
+	</div>
+
+
+	<div class="row">
+		<div class="col-xs-1"> </div>
+
+
+		<div class="col_top col-xs-10">
+
+
+		<div class="posts_container">
+
+
+
+
+  
+    {% include "chats/trendingtopicslist.html" %}
+
+
+
+
+  
+		<div style="clear: both"> </div>
+
+
+
+
+		</div>
+
+		<div class="col-xs-1"> </div>
+
+
+	</div>
+
+
+
+	
+
+
+
+
+{% endblock %}

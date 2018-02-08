@@ -1,0 +1,147 @@
+{% for localchat in localchats %}
+
+<div class="trending_post_canvas">
+
+
+        <div class="left_arrow_canvas"> 
+
+
+          <!--<button> <span class="glyphicon glyphicon-arrow-up"></span> </button>-->
+
+
+
+        </div>
+
+        <div class="the_post"> 
+
+
+          <div class="the_post_contents"> 
+
+            <div class="avatar_canvas"> 
+
+
+              <img class="the_post_logo img-circle" src="{{localchat.get_absolute_url_for_avatar}}">
+
+
+
+
+            </div>
+
+
+            <div class="post_info">
+
+
+              <div class="the_post_title">
+
+
+                <a href="{{localchat.get_absolute_url}}"> {{localchat.about}} </a>
+                <a class="the_post_chatgroup" href="{{localchat.chatgroup.get_absolute_url}}">&nbsp {{localchat.chatgroup.name}}</a>
+
+
+
+
+
+              </div>
+
+              {% if localchat.get_the_most_recent_message %}
+
+              <div class="the_post_recent_message"> 
+
+
+                <div class="the_post_message_avatar">
+
+
+                  <img class="small_avatar img-circle" src="{{localchat.get_the_most_recent_message.get_url_for_avatar_of_message_sender}}">
+
+
+
+
+                </div>
+
+                <div class="the_post_message_text"> 
+
+                    <span>
+
+                        {{localchat.get_the_most_recent_message.short_text}}
+
+
+                    </span>
+
+
+
+                </div>
+
+                <div style="clear:both"> </div>
+
+
+              </div>
+
+              {% endif %}
+
+
+            </div>
+
+            <div style="clear:both">  </div>
+
+
+
+          </div>
+          
+          <div class="localchat_rating the_post_rating">
+
+
+            <button id="localchat_button_{{localchat.id}}" class=" 
+
+
+                    {% if request.user in localchat.participants.all %}
+
+                    fav_button
+
+
+                    {% else %}
+
+                    fav_button_pale
+
+
+                    {% endif %}
+
+
+
+                  fav_localchat" data-id="{{localchat.id}}">
+                    
+                  <i class="fa fa-star" aria-hidden="true"></i>
+
+
+            </button>
+
+            <span id="number_of_favs_{{localchat.id}}"> {{localchat.get_number_of_participants}} </span>
+
+              
+
+           </div>
+ 
+
+        </div>
+
+        <div class="right_arrow_canvas">
+
+
+        <!--<button> <span class="glyphicon glyphicon-arrow-down"></span> </button> -->
+
+
+
+        </div>
+
+        <div style="clear:both">  </div>
+
+
+
+        
+
+        
+      </div>
+
+      <div style="clear:both">  </div>
+
+
+{% endfor %}

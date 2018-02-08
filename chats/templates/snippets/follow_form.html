@@ -1,0 +1,14 @@
+<form method="post" action="{% url "chatgroup-follow" %}">
+
+{% csrf_token %}
+
+
+
+<input type="hidden" name="id" value="{{object.id}}" />
+<button> Follow</button>
+
+
+
+</form>
+
+

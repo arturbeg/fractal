@@ -1,0 +1,775 @@
+{% extends 'chats/base.html' %}
+{% load staticfiles %}
+
+
+
+{% block title %} {{object.name}} {% endblock %}
+
+
+
+
+{% block content %}
+
+
+
+
+
+  <div class="row">
+
+    <div class="col-xs-1"> </div>
+
+
+    <div class="col-xs-10">
+
+
+    <div class="c-g-i">
+
+       <div class="c-g-i-inner"> 
+
+      <div class="pull-left">
+
+      <img class="img-circle" src="{{object.get_absolute_url_for_avatar}}">
+
+
+      </div>
+
+      <div class="info">
+
+
+      <div class="main-info">
+
+      <h4> {{object.name}}
+
+
+
+     <!-- <input id="follow_chatgroup" type="button" name="{{object.id}}" class="follow-btn-big btn" value="Follow" /> -->
+
+
+      <!--<button class="follow_chatgroup follow-btn-big btn"> Follow </button> -->
+
+
+     <!-- <input id="chatgroup_id" type="hidden" value="{{object.id}}" /> -->
+
+
+      <a class="afollow follow-btn-big btn" href="#" data-id="{{ object.id }}">
+
+
+      {% if request.user in object.members.all %}
+
+      Unfollow
+
+
+      {% else %}
+
+
+      Follow
+
+
+      {% endif %}
+
+
+
+
+
+      </a>
+
+
+
+
+      </h4>
+
+      <button class="afollow follow_chatgroup follow-btn btn" data-id="{{object.id}}">
+
+
+      {% if request.user in object.members.all %}
+
+          Unfollow
+
+
+          {% else %}
+
+
+          Follow
+
+
+      {% endif %}
+
+
+
+
+
+      </button>
+
+
+
+
+
+
+      </div>
+
+      <div class="clear"> </div>
+
+      <div class="other-info">
+
+        <div class="group-stats">
+
+
+        <a role="button" data-toggle="modal" data-target=".chatgroup_followers_modal">
+        <span class="followers"> <span id="follower_counter"> {{object.members.count}} </span> followers </span></a>
+        <span class="local-chats"> <span> {{object.localchat_set.count}} </span> local chats </span>
+        <span class="topics"> <span> {{object.topic_set.count}} </span> topics </span>
+
+        </div>
+
+
+        <div class="group-about">
+          <p>
+
+
+            {{object.about}}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="clear-medium"> </div>
+      </div>
+
+
+
+
+    </div>
+
+    <!-- Uses user describtion class because it was already configured in CSS --> 
+    <!-- Looks ugly for now, but will be changed soon -->
+
+    {% if is_owner %}
+    <h4 class="user_describtion"><button class="edit_profile_button btn" type="button" data-toggle="modal" data-target=".editChatgroup"> Edit Chatgroup </button></h4>
+
+    {% endif %}
+
+    </div>
+    </div>
+
+
+    <div class="col-xs-1"> </div>
+
+
+
+  </div>
+
+
+<div class="row">
+		<div class="col-xs-1"> </div>
+
+
+		<div class="col-xs-10">
+
+
+
+            <div class="selection">
+
+
+                <a id="display_chatgroup_topics" href="#"> <span id="topics_select_span" class="select2">Topics</span></a>
+                <a id="display_chatgroup_localchats" href="#"><span id="localchats_select_span" class="select1">Localchats</span> </a>
+
+
+
+		    </div>
+
+            <div class="chatgroup_localchats">
+
+
+
+
+                {% for localchat in localchats %}
+
+
+
+      <div class="trending_post_canvas">
+
+
+        <div class="left_arrow_canvas"> 
+
+
+          <!--<button> <span class="glyphicon glyphicon-arrow-up"></span> </button>-->
+
+
+
+        </div>
+
+        <div class="the_post"> 
+
+
+          <div class="the_post_contents"> 
+
+            <div class="avatar_canvas"> 
+
+
+              <img class="the_post_logo img-circle" src="{{localchat.get_absolute_url_for_avatar}}">
+
+
+
+
+            </div>
+
+
+            <div class="post_info">
+
+
+              <div class="the_post_title">
+
+
+                <a href="{{localchat.get_absolute_url}}"> {{localchat.about}} </a>
+                <a class="the_post_chatgroup" href="{{localchat.chatgroup.get_absolute_url}}">&nbsp {{localchat.chatgroup.name}}</a>
+
+
+
+
+
+              </div>
+
+              {% if localchat.get_the_most_recent_message %}
+
+              <div class="the_post_recent_message"> 
+
+
+                <div class="the_post_message_avatar">
+
+
+                  <img class="small_avatar img-circle" src="{{localchat.get_the_most_recent_message.get_url_for_avatar_of_message_sender}}">
+
+
+
+
+                </div>
+
+                <div class="the_post_message_text"> 
+
+                    <span>
+
+                        {{localchat.get_the_most_recent_message.short_text}}
+
+
+                    </span>
+
+
+
+                </div>
+
+                <div style="clear:both"> </div>
+
+
+              </div>
+
+              {% endif %}
+
+
+            </div>
+
+            <div style="clear:both">  </div>
+
+
+
+          </div>
+          
+          <div class="localchat_rating the_post_rating">
+
+
+            <button id="localchat_button_{{localchat.id}}" class=" 
+
+
+                    {% if request.user in localchat.participants.all %}
+
+                    fav_button
+
+
+                    {% else %}
+
+                    fav_button_pale
+
+
+                    {% endif %}
+
+
+
+                  fav_localchat" data-id="{{localchat.id}}">
+                    
+                  <i class="fa fa-star" aria-hidden="true"></i>
+
+
+            </button>
+
+            <span id="number_of_favs_{{localchat.id}}"> {{localchat.get_number_of_participants}} </span>
+
+              
+
+           </div>
+ 
+
+        </div>
+
+        <div class="right_arrow_canvas">
+
+
+        <!--<button> <span class="glyphicon glyphicon-arrow-down"></span> </button> -->
+
+
+
+        </div>
+
+        <div style="clear:both">  </div>
+
+
+
+        
+
+        
+      </div>
+
+      <div style="clear:both">  </div>
+
+
+
+
+
+                {% endfor %}
+
+
+
+
+
+
+
+            </div>
+
+            <div class="chatgroup_topics">
+
+
+            {% for topic in topics%}
+	               
+
+                 
+
+
+      <div class="trending_post_canvas">
+
+
+        <div class="left_arrow_canvas"> 
+
+
+          <!--<button> <span class="glyphicon glyphicon-arrow-up"></span> </button>-->
+
+
+
+        </div>
+
+        <div class="the_post"> 
+
+
+          <div class="the_post_contents"> 
+
+            <div class="avatar_canvas"> 
+
+
+              <img class="the_post_logo img-circle" src="{{topic.get_absolute_url_for_avatar}}">
+
+
+
+
+            </div>
+
+
+            <div class="post_info">
+
+
+              <div class="the_post_title">
+
+
+                <a href="{{topic.get_absolute_url}}"> {{topic.about}} </a>
+                <a class="the_post_chatgroup" href="{{topic.chatgroup.get_absolute_url}}">&nbsp {{topic.chatgroup.name}}</a>
+
+
+
+
+
+              </div>
+
+              {% if topic.get_the_most_recent_message %}
+
+              <div class="the_post_recent_message"> 
+
+
+                <div class="the_post_message_avatar">
+
+
+                  <img class="small_avatar img-circle" src="{{topic.get_the_most_recent_message.get_url_for_avatar_of_message_sender}}">
+
+
+
+
+                </div>
+
+                <div class="the_post_message_text"> 
+
+                    <span>
+
+                        {{topic.get_the_most_recent_message.short_text}}
+
+
+                    </span>
+
+
+
+                </div>
+
+                <div style="clear:both"> </div>
+
+
+              </div>
+
+              {% endif %}
+
+
+            </div>
+
+            <div style="clear:both">  </div>
+
+
+
+          </div>
+          
+          <div class="the_post_rating">
+
+              <a id="up_{{topic.id}}" href="#" class="
+              {% if request.user in topic.arrow_ups.all %}
+
+              red 
+
+              {% endif %}
+
+              small_arrow raise_topic" data-id="{{topic.id}}"><span class="glyphicon glyphicon-arrow-up"></span> </a>
+
+              <span id="{{topic.id}}"> {{topic.score}} </span>
+
+              <a id="down_{{topic.id}}" href="#" class="
+
+
+              {% if request.user in topic.arrow_downs.all %}
+
+              black 
+
+              {% endif %}
+
+
+              small_arrow lower_topic" data-id="{{topic.id}}"> <span class="glyphicon glyphicon-arrow-down"></span> </a>
+
+           </div>
+ 
+
+        </div>
+
+        <div class="right_arrow_canvas">
+
+
+        <!--<button> <span class="glyphicon glyphicon-arrow-down"></span> </button> -->
+
+
+
+        </div>
+
+        <div style="clear:both">  </div>
+
+
+
+        
+
+        
+      </div>
+
+      <div style="clear:both">  </div>
+
+
+            {% endfor %}
+			<div style="clear: both"> </div>
+
+
+
+            </div>
+
+
+
+
+        <!-- Check the divs and improve the tabbing, make the HTML look beautiful -->
+		</div>
+
+
+		<div class="col-xs-1"> </div>
+
+
+
+
+
+	</div>
+
+
+
+  {% if is_owner %}
+  <div id="{{object.id}}" class="editChatgroup modal" role="dialog">
+                    <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                      <div class="modal-content">
+
+
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal"> &times; </button>
+                          <h4 class="modal-title"> <span id="username"> {{object.name}} </span></h4>
+                        </div>
+
+
+                        <div class="modal-body">
+
+
+                          <form id="editUserProfile" method="post" enctype="multipart/form-data"> {% csrf_token %}
+
+                            <div class="form-group">
+
+                              
+                                  <label for="changeAvatar"> Change Pic </label>
+
+                                  <input type="file" class="form-control-file" id="editAvatar" name="avatar" value="">
+                              
+
+                            </div>
+
+                            <div class="form-group">
+
+                              <label for="changeName"> Change Name </label>
+                              <input type="text" class="form-control" id="changeName" name="name" aria-describedby="changename" value="{{object.name}}">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                              <label for="changeAbout"> Change About </label>
+                              <input type="text" class="form-control" id="changeAbout" name="about" aria-describedby="changename" value="{{object.about}}">
+
+                            </div>
+
+
+                            <button type="submit" class="btn btn-default">Submit</button>
+
+
+                            
+                            
+
+                              
+
+
+
+
+                          </form>
+
+
+
+                        </div>
+
+                        <!--<div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div> -->
+                    </div>
+
+                  </div>
+</div>
+
+{% endif %}
+
+
+
+<div class="modal fade chatgroup_followers_modal" tabindex="-1" role="dialog" aria-labelledby="Chatgroup Followers" aria-hidden="true">
+  
+
+  <div class="modal-dialog modal-lg">
+
+
+      <div class="modal-content">
+        
+
+
+          <div class="followers_header modal-header">
+
+
+            <span class="followers_title modal-title">Followers</span>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                
+                <span aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i></span>
+
+            </button>
+
+
+
+           </div>
+
+
+           <div class="followers_body modal-body">
+          
+            {% for follower in chatgroup_followers%}
+
+
+            <div class="follower_item"> 
+
+
+
+              <img class="follower_avatar img-circle" src="{{follower.profile.get_absolute_url_for_avatar}}" height="32px" width="32px">
+
+
+              <div class="follower_info">
+
+              <a href="{{follower.profile.get_absolute_url}}"><span> {{follower.username}} </span></a>
+
+              </div>
+
+
+              <button id="follow_a_user_{{follower.profile.id}}" class="follow_button_modal follow_a_user btn" data-id="{{follower.profile.id}}">
+
+
+
+            {% if request.user in follower.profile.followers.all %}
+
+            Unfollow
+
+            {% else %}
+
+            Follow
+
+            {% endif %}
+
+
+          </button>
+
+
+
+
+              <div style="clear:both"> </div>
+
+
+
+
+
+            </div>
+
+            {% endfor %}
+
+
+
+
+           </div>
+
+
+
+
+
+
+      </div>
+
+
+
+  </div>
+
+
+
+
+</div>
+
+
+<input type="hidden" name="chatgroup_id" value="{{object.id}}" />
+
+
+
+
+
+{% endblock %}
+
+
+{% block infinite-scroll %}   
+
+<script type="text/javascript" src='{% static "chats/js/chatgroup_custom.js" %}'></script>
+
+
+{% endblock %}
+
+
+
+
+<!--
+
+
+
+<h1> {{object.name}}</h1>
+
+
+{{object.about}} <hr>
+
+
+{% if request.user.is_authenticated %}
+
+<form method="post" action="{% url "chatgroup-follow" %}">
+
+{% csrf_token %}
+
+
+
+<input type="hidden" name="chat_group_id" value="{{object.id}}" />
+<button>
+
+
+{% if request.user in object.members.all %}
+
+
+Unfollow
+
+
+{% else %}
+
+
+Follow
+
+
+{% endif %}
+
+
+
+
+</button>
+
+
+
+</form>
+
+
+
+{% endif %}
+
+{% if request.user in object.members.all %}
+
+Is following
+
+
+{% endif %}
+
+
+{% if is_owner%}
+
+
+{% include "snippets/new_local_chat_form.html" %}
+
+{% endif %}
+
+
+
+
+-->

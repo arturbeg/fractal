@@ -1,0 +1,186 @@
+
+
+{% if is_localchat %}
+
+
+{% for localchat in results %}
+
+<div id="localchat_{{localchat.id}}" class="related_chat">
+
+
+							<div class="related_chat_avatar">
+
+								<img class="img-circle" src="{{localchat.get_absolute_url_for_avatar}}">
+
+
+
+
+							</div>
+
+
+							<div class="related_chat_content">
+
+								<div class="related_chat_header"> 
+
+									<a href="{{localchat.get_absolute_url}}"> {{localchat.name}} </a>
+
+
+									<button>
+										
+									<i class="fa fa-star" aria-hidden="true"></i>
+
+
+									</button>
+
+									<span> {{localchat.get_number_of_participants}} </span>
+
+
+								</div>
+
+
+
+
+
+								<div class="related_chat_message"> 
+
+
+									<div class="recent_message_avatar">
+
+
+										<img class="img-circle" src="{{localchat.get_the_most_recent_message.user.profile.get_absolute_url_for_avatar}}">
+
+
+
+									</div>
+
+
+									<div class="recent_message_content"> 
+
+									<span> {{localchat.get_the_most_recent_message.very_short_text}}
+									</span>
+
+
+									</div>
+
+									<div style="clear:both"> </div>
+
+
+
+
+
+								</div>
+
+
+
+							</div>
+
+							<div style="clear:both"> </div>
+
+
+
+
+
+
+
+
+
+						</div>
+						<div style="clear:both"> </div>
+
+{% endfor %}
+
+
+{% else %}
+
+
+{% for topic in results %}
+
+
+						<div id="topic_{{topic.id}}" class="related_chat">
+
+
+							<div class="related_chat_avatar">
+
+								<img class="img-circle" src="{{topic.get_absolute_url_for_avatar}}">
+
+
+
+
+							</div>
+
+
+							<div class="related_chat_content">
+
+								<div class="related_chat_header"> 
+
+									<a href="{{topic.get_absolute_url}}"> {{topic.get_short_about}} </a>
+
+
+									
+
+
+								</div>
+
+
+
+
+
+								<div class="related_chat_message"> 
+
+
+									<div class="recent_message_avatar">
+
+
+										<img class="img-circle" src="{{topic.get_the_most_recent_message.user.profile.get_absolute_url_for_avatar}}">
+
+
+
+									</div>
+
+
+									<div class="recent_message_content"> 
+
+									<span> {{topic.get_the_most_recent_message.very_short_text}}
+									</span>
+
+
+									</div>
+
+									<div style="clear:both"> </div>
+
+
+
+
+
+								</div>
+
+
+
+							</div>
+
+							<div style="clear:both"> </div>
+
+
+
+
+
+
+
+
+
+						</div>
+						<div style="clear:both"> </div>
+
+
+
+{% endfor %}
+
+
+
+
+
+{% endif %}
+
+
+
+

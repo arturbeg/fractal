@@ -1,0 +1,79 @@
+{% for notification in notifications %}
+
+	<div data-type="{{notification.text}}" data-postid="{{notification.post.id}}" class="notification">
+
+  <!-- data-postid is allowed to be undefined -->
+
+                  <div class="the_post_recent_message"> 
+
+
+                      <div class="the_post_message_avatar">
+
+
+                        <a href="{{notification.user_2.profile.get_absolute_url}}"><img class="small_avatar img-circle" src="{{notification.user_2.profile.get_absolute_url_for_avatar}}" ></a>
+
+
+                      </div>
+
+                      <div class="text_color_black the_post_message_text"> 
+                          
+                          <span>
+
+                              {% if notification.text == "like_post" %}
+
+
+                              
+                              <a href="{{notification.user_2.profile.get_absolute_url}}"><strong>{{notification.user_2}} </strong></a> liked your post: {{notification.post.message.short_text}}
+
+                              {% elif notification.text == "like_a_message" %}
+
+                              <a href="{{notification.user_2.profile.get_absolute_url}}"><strong>{{notification.user_2}} </strong></a> liked your message:
+                              {{notification.message.short_text}}
+
+                              {% elif notification.text == "like_post_comment" %}
+
+
+                              <a href="{{notification.user_2.profile.get_absolute_url}}"><strong>{{notification.user_2}} </strong></a> liked your comment:
+                              {{notification.post_comment.short_text}}
+
+                              {% elif notification.text == "follow_a_user" %}
+
+                              <a href="{{notification.user_2.profile.get_absolute_url}}"><strong>{{notification.user_2}} </strong></a> started following you
+
+                              {% elif notification.text == "add_post_comment" %}
+
+
+                              <a href="{{notification.user_2.profile.get_absolute_url}}"><strong>{{notification.user_2}} </strong></a> commented on your post:
+                              {{notification.post.message.short_text}}
+
+
+
+
+                              {% endif %}
+
+
+                          </span>
+
+                          
+
+                            <span>   </span>
+                          
+
+
+
+                      </div>
+
+                      <div style="clear:both"> </div>
+
+
+                </div>
+
+
+              </div>
+
+
+
+
+
+
+{% endfor %}

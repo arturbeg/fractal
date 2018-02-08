@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+
+
+
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="{% static "chats/css/bootstrap.css" %}"  />
+	<link rel="stylesheet" type="text/css" href="{% static "chats/css/main.css" %}" />
+  
+</head>
+<body>
+
+<div class="container">
+
+
+	<div class="fractal_brend">
+
+
+
+		<span>Fractal</span>
+
+
+	</div>
+
+
+	<div class="sign_in">
+
+
+		<form method="post">
+
+			{% csrf_token %}
+			
+
+		
+			{% for field in form %}
+			<div class="form-group">
+      <p>
+
+        {{ field }}
+
+
+
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+		</div>
+    {% endfor %}
+
+
+			<button type="submit">Log in</button>
+
+
+
+			<div class="forgot">
+			<a href="">Forgot username or password?</a>
+
+			</div>
+
+
+			<div class="sign_up">
+			 <span>Don't have an account?</span> 
+
+			 <a href="#">Sign Up </a>
+
+			</div>
+
+
+
+
+
+
+
+		</form>
+		
+
+
+
+
+	
+	</div>
+
+
+
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %} New Topic {% endblock %}
+
+
+
+
+{% block content%}
+
+
+{% for chatgroup in chatgroups %}
+
+
+<a href="{{chatgroup.get_absolute_url}}"> {{chatgroup.name}} </a></br>
+
+
+
+
+
+{% endfor %}
+
+
+{% endblock %}
+
+
+
+

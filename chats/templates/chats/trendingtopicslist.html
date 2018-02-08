@@ -1,0 +1,150 @@
+
+			{% for topic in topics %}
+
+
+
+			<div class="trending_post_canvas">
+
+
+				<div class="left_arrow_canvas"> 
+
+
+					<!--<button> <span class="glyphicon glyphicon-arrow-up"></span> </button>-->
+
+
+
+				</div>
+
+				<div class="the_post"> 
+
+
+					<div class="the_post_contents"> 
+
+						<div class="avatar_canvas"> 
+
+
+							<img class="the_post_logo img-circle" src="{{topic.get_absolute_url_for_avatar}}">
+
+
+
+
+						</div>
+
+
+						<div class="post_info">
+
+
+							<div class="the_post_title">
+
+
+								<a href="{{topic.get_absolute_url}}"> {{topic.about}} </a>
+								<a class="the_post_chatgroup" href="{{topic.chatgroup.get_absolute_url}}">&nbsp {{topic.chatgroup.name}}</a>
+
+
+
+
+
+							</div>
+
+							{% if topic.get_the_most_recent_message %}
+
+							<div class="the_post_recent_message"> 
+
+
+								<div class="the_post_message_avatar">
+
+
+									<img class="small_avatar img-circle" src="{{topic.get_the_most_recent_message.get_url_for_avatar_of_message_sender}}">
+
+
+
+
+								</div>
+
+								<div class="the_post_message_text"> 
+										{% if topic.get_the_most_recent_message.get_message_type == "text" %}
+										<span>
+
+												{{topic.get_the_most_recent_message.short_text}}
+
+
+										</span>
+
+										{% elif topic.get_the_most_recent_message.get_message_type == "photo" %}
+
+											<span> {{topic.get_the_most_recent_message.user.username}} shared a photo   </span>
+											
+										{% endif %}
+
+
+
+								</div>
+
+								<div style="clear:both"> </div>
+
+
+							</div>
+
+							{% endif %}
+
+
+						</div>
+
+						<div style="clear:both">  </div>
+
+
+
+					</div>
+					
+					<div class="the_post_rating">
+
+							<a id="up_{{topic.id}}" href="#" class="
+							{% if request.user in topic.arrow_ups.all %}
+
+							red 
+
+							{% endif %}
+
+							small_arrow raise_topic" data-id="{{topic.id}}"><span class="glyphicon glyphicon-arrow-up"></span> </a>
+
+							<span id="{{topic.id}}"> {{topic.score}} </span>
+
+							<a id="down_{{topic.id}}" href="#" class="
+
+
+							{% if request.user in topic.arrow_downs.all %}
+
+							black 
+
+							{% endif %}
+
+
+							small_arrow lower_topic" data-id="{{topic.id}}"> <span class="glyphicon glyphicon-arrow-down"></span> </a>
+
+					 </div>
+ 
+
+				</div>
+
+				<div class="right_arrow_canvas">
+
+
+				<!--<button> <span class="glyphicon glyphicon-arrow-down"></span> </button> -->
+
+
+
+				</div>
+
+				<div style="clear:both">  </div>
+
+
+
+				
+
+				
+			</div>
+
+			<div style="clear:both">  </div>
+
+
+			{% endfor %}

@@ -1,0 +1,45 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %} Create a new ChatGroup {% endblock %}
+
+
+
+
+{% block content %}
+
+
+
+<h1> List of Chat Groups</h1>
+
+
+<ul>
+
+
+{% for chat_group in object_list%}
+
+
+   <li>  {{chat_group.name}}</li>
+
+
+
+
+
+
+
+
+{% endfor %}
+
+
+
+
+
+</ul>
+
+
+{% endblock %}
+
+
+
+

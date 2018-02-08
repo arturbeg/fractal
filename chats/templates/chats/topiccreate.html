@@ -1,0 +1,102 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %} New Topic {% endblock %}
+
+
+
+
+{% block content%}
+  
+  <h2 class="new_group_page_title">New Topic</h2>
+
+
+  <div class="new_topic new_chatgroup">
+	<form method="post" autocomplete="off" enctype="multipart/form-data">{% csrf_token %}
+
+
+
+
+
+			{% for field in form %}
+			<div class="form-group">
+      <p>
+
+
+
+        {{ field }}
+
+
+
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+		</div>
+    {% endfor %}
+
+  <div class="dropdown">
+   <div class="form-group-cq form-group">
+      <p>
+
+        <input type="text" name="chatgroup_query" id="topic_chatgroup_query" class="topic_chatgroup_query input_new_chatgroup form-control" required placeholder="Search Chatgroup" maxlength="200" />
+
+        <input id="chatgroup_id" type="hidden" name="chatgroup_id" required>
+
+
+
+        
+      </p>
+  </div>
+    
+
+    
+    <div class="chatgroup_search_results dropdown-menu" aria-labelledby="dropdownMenuButton">
+      
+
+      
+
+      
+
+      <div class="result_item">
+
+      <span> No Results </span>   
+
+      </div>
+      
+
+  
+    </div>  
+
+  
+
+	<div class="input_new_chatgroup form-group">
+
+      <button class="upload_chatgroup_photo btn btn-primary" type="button" class="btn btn-primary"> Upload a Photo </button>
+      <span class="photo_location">  </span>
+
+  </div>
+
+  <div class="input_new_chatgroup form-group">
+
+     <button type="submit" class="button_black_bg btn btn-primary">Create</button>
+
+  </div>
+
+
+
+
+
+</form>
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+
+

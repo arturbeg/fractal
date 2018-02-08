@@ -1,0 +1,164 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %} Chatgroup Search {% endblock %}
+
+
+
+
+{% block content %}
+
+
+
+
+{% for object in search_results %}
+
+
+
+
+
+    <div class="c-g-i">
+
+
+      <div class="pull-left">
+
+      <a href="{{object.get_absolute_url}}"><img class="img-circle" src="{{object.get_absolute_url_for_avatar}}"></a>
+
+
+      </div>
+
+      <div class="info">
+
+
+      <div class="main-info">
+
+      <h4> <a href="{{object.get_absolute_url}}"> {{object.name}} </a>
+
+
+
+     <!-- <input id="follow_chatgroup" type="button" name="{{object.id}}" class="follow-btn-big btn" value="Follow" /> -->
+
+
+      <!--<button class="follow_chatgroup follow-btn-big btn"> Follow </button> -->
+
+
+     <!-- <input id="chatgroup_id" type="hidden" value="{{object.id}}" /> -->
+
+
+      <a id="follow_big{{object.id}}" class="afollow_search_list follow-btn-big btn" href="#" data-id="{{ object.id }}">
+
+
+
+          {% if request.user in object.members.all %}
+
+            Unfollow
+
+
+            {% else %}
+
+
+            Follow
+
+
+          {% endif %}
+
+
+
+
+
+      </a>
+
+
+
+
+      </h4>
+
+      <button id="follow_small{{object.id}}" class="afollow_search_list follow_chatgroup follow-btn btn" data-id="{{object.id}}">
+
+
+      {% if request.user in object.members.all %}
+
+          Unfollow
+
+
+          {% else %}
+
+
+          Follow
+
+
+      {% endif %}
+
+
+
+
+
+      </button>
+
+
+
+
+
+
+      </div>
+
+      <div class="clear"> </div>
+
+      <div class="other-info">
+
+        <div class="group-stats">
+
+        <span class="followers"> <span id="follower_counter{{object.id}}"> {{object.members.count}} </span> followers </span>
+        <span class="local-chats"> <span> {{object.localchat_set.count}} </span> local chats </span>
+        <span class="topics"> <span> {{object.topic_set.count}} </span> topics </span>
+
+        </div>
+
+
+        <div class="group-about">
+          <p>
+
+
+            {{object.about}}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="clear-medium"> </div>
+      </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+{% endfor %}
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+

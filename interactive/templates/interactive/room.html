@@ -1,0 +1,1557 @@
+{% extends "chats/base.html" %}
+
+{% block title %} {{chatgroup}} | {{chat_room_type}} |  {{room.name}}  {% endblock %}
+
+
+{% block head %}
+<link href='//fonts.googleapis.com/css?family=Raleway:400,300,600,200' rel='stylesheet' type='text/css'
+	  xmlns="http://www.w3.org/1999/html">
+
+{% load static %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="row">
+	<div class="left_section col-md-3">
+
+			<div class="chatroom_panel panel panel-default">
+
+				<div class="heading panel-heading">
+
+					<div class="related_heading_top"> 
+
+						<span> Related </span>
+
+					 </div>
+					<div class="related_heading_bottom">
+
+					
+
+
+
+						<span id="showLC" class="local_chats_text"><button class="show_button" id="showLocalChats">Local Chats</button> </span>
+
+
+						&nbsp 
+
+						<span id="showT"><button class="show_button" id="showTopics">Topics</button></span></h5>
+
+							
+
+
+
+					</div>
+
+					
+					<!--
+					<h5> <span id="showLC" class="local_chats_text"><button id="showLocalChats">Local Chats</button> </span>
+
+
+
+
+
+						&nbsp <span id="showT"><button id="showTopics">Topics</button></span></h5>
+
+						-->
+
+				</div>
+
+
+
+				<!-- New Releted section budy start here -->
+
+				<div id="listOfChats" class="panel-body-adjusted panel-body">
+
+
+					<input id="q" type="text" class="form-control" placeholder="Search"/>
+					<input type="hidden" id="modelToSearch" name="modelToSearch" />
+					<input type="hidden" id="chatgroup_id" name="chatgroup_id" value="{{room.chatgroup.id}}" />
+
+
+					<div style="clear:both" > </div>
+
+					<div id="results" class="related_chats_list" style="display:none">
+
+
+
+
+					</div>
+
+
+
+					<div id="list_of_localchats" class="related_chats_list">
+
+						{% for localchat in localchats %}
+
+
+						<div id="localchat_{{localchat.id}}" class="related_chat">
+
+
+							<div class="related_chat_avatar">
+
+								<img class="img-circle" src="{{localchat.get_absolute_url_for_avatar}}">
+
+
+
+
+							</div>
+
+
+							<div class="related_chat_content">
+
+								<div class="related_chat_header"> 
+
+									<a href="{{localchat.get_absolute_url}}"> {{localchat.name}} </a>
+
+
+									<button id="localchat_button_{{localchat.id}}" class=" 
+
+
+										{% if request.user in localchat.participants.all %}
+
+										fav_button
+
+
+										{% else %}
+
+										fav_button_pale
+
+
+										{% endif %}
+
+
+
+									fav_localchat" data-id="{{localchat.id}}">
+										
+									<i class="fa fa-star" aria-hidden="true"></i>
+
+
+									</button>
+
+									<span id="number_of_favs_{{localchat.id}}"> {{localchat.get_number_of_participants}} </span>
+
+
+								</div>
+
+
+
+
+
+								<div class="related_chat_message"> 
+
+
+									<div class="recent_message_avatar">
+
+
+										<img class="img-circle" src="{{localchat.get_the_most_recent_message.user.profile.get_absolute_url_for_avatar}}">
+
+
+
+									</div>
+
+
+									<div class="recent_message_content"> 
+
+									<span> {{localchat.get_the_most_recent_message.very_short_text}}
+									</span>
+
+
+									</div>
+
+									<div style="clear:both"> </div>
+
+
+
+
+
+								</div>
+
+
+
+							</div>
+
+							<div style="clear:both"> </div>
+
+
+
+
+
+
+
+
+
+						</div>
+						<div style="clear:both"> </div>
+
+
+
+						{% endfor %}
+
+
+
+
+
+					</div>
+
+
+					<div id="list_of_topics" class="related_chats_list" style="display:none"> 
+
+
+						{% for topic in topics %}
+
+
+
+
+						<div id="topic_{{topic.id}}" class="related_chat">
+
+
+							<div class="related_chat_avatar">
+
+								<img class="img-circle" src="{{topic.get_absolute_url_for_avatar}}">
+
+
+
+
+							</div>
+
+
+							<div class="related_chat_content">
+
+								<div class="related_chat_header"> 
+
+									<a href="{{topic.get_absolute_url}}"> {{topic.get_short_about}} </a>
+
+
+
+									<a id="up_{{topic.id}}" href="#" class="
+							{% if request.user in topic.arrow_ups.all %}
+
+							red 
+
+							{% endif %}
+
+							small_arrow raise_topic" data-id="{{topic.id}}"><span class="glyphicon glyphicon-arrow-up"></span> </a>
+
+							<span id="{{topic.id}}"> {{topic.score}} </span>
+
+							<a id="down_{{topic.id}}" href="#" class="
+
+
+							{% if request.user in topic.arrow_downs.all %}
+
+							black 
+
+							{% endif %}
+
+
+							small_arrow lower_topic" data-id="{{topic.id}}"> <span class="glyphicon glyphicon-arrow-down"></span> </a>
+
+
+									
+
+
+								</div>
+
+
+
+
+
+								<div class="related_chat_message"> 
+
+
+									<div class="recent_message_avatar">
+
+
+										<img class="img-circle" src="{{topic.get_the_most_recent_message.user.profile.get_absolute_url_for_avatar}}">
+
+
+
+									</div>
+
+
+									<div class="recent_message_content"> 
+
+									<span> {{topic.get_the_most_recent_message.very_short_text}}
+									</span>
+
+
+									</div>
+
+									<div style="clear:both"> </div>
+
+
+
+
+
+								</div>
+
+
+
+							</div>
+
+							<div style="clear:both"> </div>
+
+
+
+
+
+
+
+
+
+						</div>
+						<div style="clear:both"> </div>
+
+
+
+
+
+
+						{% endfor %}
+
+
+
+					</div>
+
+
+
+
+
+
+
+				</div>
+
+
+
+
+
+
+
+				<!-- New Releted section budy ends here -->
+
+
+
+
+
+
+
+			</div>
+
+
+		</div>
+
+
+		<div class="middle_section col-md-6">
+
+		<div class="chatroom_panel panel_messages panel panel-default">
+
+				<div id="middle_heading" class="heading panel-heading">
+
+
+				<div class="heading_1"> </div>
+
+				<div class="heading_2"> 
+
+						<div class="heading_21">  
+
+
+								<span class="local_chat_name">
+
+
+									{%if chat_room_type == "globalchat"%}
+
+
+									{{room.chatgroup.name}}
+
+
+									{% else %}
+
+
+									{{room.name}}
+
+									{% endif %}
+
+
+									<span>- {{chat_room_type}}</span>
+
+
+								</span>
+
+
+
+						</div>
+						<div class="heading_22"> 
+
+							<a href="{{room.chatgroup.globalchat.get_absolute_url}}"><span class="related_globalchat"> {{room.chatgroup.name}} </span></a>
+
+
+						 </div>
+
+
+				 </div>
+
+				<div class="heading_3">
+
+					<div class="modal_buttons">
+
+						
+
+					</div>
+
+					
+
+
+
+				</div>
+
+					
+
+
+					<!--
+						<h4> <span class="local_chat_name">
+
+
+							{%if chat_room_type == "globalchat"%}
+
+
+							{{room.chatgroup.name}}
+
+
+							{% else %}
+
+
+							{{room.name}}
+
+							{% endif %}
+
+
+							<span>- {{chat_room_type}}</span>
+
+
+						</span>
+
+							<span class="right_icons">
+
+
+						
+
+
+
+	
+
+
+
+
+
+
+								<button class="btn chat_room_info" type="button" data-toggle="modal" data-target="#myModal"><i style="font-size: 20px;" class="fa fa-info-circle" aria-hidden="true"></i></button>
+
+
+
+
+								{% if is_owner %}
+
+
+								<button type="button" data-toggle="modal" data-target="#adminPanel"> <i style="font-size: 20px;" class="fa fa-cog" aria-hidden="true"></i></button>
+
+
+								{% endif %}
+
+
+						
+
+
+						</span>
+
+
+						 </h4>
+
+						 -->
+
+
+					
+
+
+
+
+
+					
+
+
+
+
+
+
+
+
+
+
+				</div>
+
+
+				<div class="messages_wrapper panel-body">
+				<input type="hidden" id="number_of_pages_for_messages" value="{{number_of_pages}}">
+
+
+
+
+
+					<div id="chat" class="chat_messages">
+
+
+
+					<img class="center-block loading_wheel dont_display" src="{% static "chats/img/loading.gif" %}">
+
+					{% for message in messages %}
+
+
+					<div class="msg">
+
+					{% if message.get_message_type == "flag" %}	
+
+					<!--	
+						<!-- Displaying the flag message in here 
+						{% if message.flag == "ws_connect" %}
+
+
+						<span class="text-center flag_message"> {{message.user.username}} joined the chat</span>
+
+						{% elif message.flag == "ws_disconnect" %}
+
+						<span class="text-center flag_message"> {{message.user.username}} left the chat</span>
+						
+
+						{% endif %}
+
+						<!-- Later on might only display the flags for the past 24 hours  
+
+					-->	
+					{% else %}	
+
+					<a class="pull-left">
+
+
+						<img class="img-circle" src="{{message.user.profile.get_absolute_url_for_avatar}}" height="40px" width="40px" >
+
+					</a>
+
+					<h5><a href="{{message.user.profile.get_absolute_url}}">{{message.user.username}}</a>
+
+
+					<span class="time">
+
+						{{message.formatted_timestamp}}
+
+
+					</span>
+
+
+
+					</h5>
+
+					{% if message.get_message_type == "text"%}
+					<p class="msg_body">
+
+							{{message.text|urlize}}
+
+						<!--<span>     Dislikes: {{message.get_number_of_dislikes}}</span> -->
+
+
+
+
+
+						{% if request.user.is_authenticated %}
+
+							
+
+							<button type="button" name="{{message.id}}" class="like fa" >
+
+								{% if request.user in message.likers.all %}
+
+								<i class="red_heart fa fa-heart" aria-hidden="true"></i>
+
+								
+
+								{% else %}
+
+								<i class="fa fa-heart-o" aria-hidden="true"></i>
+
+								
+
+								{% endif %}
+
+							</button>
+
+
+							<span id="{{message.id}}" style="margin-left: 2px;" class="number_of_likes"> {{message.get_number_of_likes}}</span>
+
+
+
+
+							{% if message.user.id == request.user.id%}
+
+								{% if message.post %}
+
+								<input type="button" name="{{message.id}}" class="share fa" value="&#xf064;" />
+
+								{% else %}
+
+									<input type="button" name="{{message.id}}" class="half_opacity share fa" value="&#xf064;" />
+
+
+								{% endif %}
+							{% endif %}
+
+						{% endif %}
+
+
+
+
+
+							<!--<span class="heart glyphicon glyphicon-heart"> <span class="number_of_likes"> 420 </span> </span> -->
+
+
+					</p>
+
+					{% elif message.get_message_type == "photo"  %}
+
+					<img class="uploaded_chat_image" src="{{message.photo.url}}">
+
+					{% if request.user.is_authenticated %}
+
+							
+
+							<button type="button" name="{{message.id}}" class="like fa" >
+
+								{% if request.user in message.likers.all %}
+
+								<i class="red_heart fa fa-heart" aria-hidden="true"></i>
+
+								
+
+								{% else %}
+
+								<i class="fa fa-heart-o" aria-hidden="true"></i>
+
+								
+
+								{% endif %}
+
+							</button>
+
+
+							<span id="{{message.id}}" style="margin-left: 2px;" class="number_of_likes"> {{message.get_number_of_likes}}</span>
+
+
+
+
+							{% if message.user.id == request.user.id%}
+
+								{% if message.post %}
+
+								<input type="button" name="{{message.id}}" class="share fa" value="&#xf064;" />
+
+								{% else %}
+
+									<input type="button" name="{{message.id}}" class="half_opacity share fa" value="&#xf064;" />
+
+
+								{% endif %}
+							{% endif %}
+
+						{% endif %}
+
+
+
+
+					{% endif %}
+					{% endif %}
+
+
+
+
+
+					</div>
+
+						<div style="clear:both"> </div>
+
+
+
+					{%endfor%}
+
+					</div>
+
+
+
+
+
+
+
+
+
+				</div>
+
+
+
+
+
+
+
+
+
+
+
+
+			</div>
+			{% if request.user.is_authenticated %}
+			<div class="send_message">
+
+
+				
+
+				<div class="input-group message_clip">
+
+
+						
+				
+
+
+
+				<div class="dropup">
+				  <button class="btn btn-default message_paperclip dropdown-toggle" type="button" data-toggle="dropdown" data-hover="dropdown"> 
+
+					<i class="fa fa-plus" aria-hidden="true"></i>
+
+				  </button>
+				  <ul class="chat_upload_options dropdown-menu">
+				    <li>
+
+
+				    	<form action="/m/upload_message_photo/" class="photo_upload_form" method="post" enctype="multipart/form-data"> {% csrf_token %}
+
+
+					    	<input name="photo" type="file" class="hidden_chat_image_input" value="">
+					    	<a href="#" class="chat_image_upload_link">Photo</a>​
+
+					    	<input name="room_id" type="hidden" value="{{room.id}}">
+					    	<input name="room_type" type="hidden" value="{{room.get_room_type}}">
+
+
+
+
+					   	</form> 	
+
+
+
+				    </li>
+				    
+				  </ul>
+				</div>
+
+
+
+
+
+
+
+
+
+
+
+
+					<form id="chatform">
+
+
+							<textarea data-autoresize rows="1" id="text" class="input_a_message_textarea form-control pull-left" type="text" name="send_message" placeholder="Message"> </textarea>
+
+							<input type="hidden" id="message_type" name="message_type" value="text">
+
+
+							
+
+						
+
+						
+
+
+						<span class="send_message_button input-group-btn">
+	        				<button id="go" class="btn btn-default" type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+	   					</span>
+
+   					</form>
+					
+
+
+
+
+					<!--<span class="clip glyphicon glyphicon-paperclip"></span>-->
+
+					
+
+
+
+
+
+				</div>
+
+				<div style="clear:none"></div>
+
+
+
+
+				
+
+
+
+
+
+
+			</div>
+			{% endif %}
+
+
+
+		</div>
+
+		<div class="right_section col-md-3">
+
+		<div class="chatroom_panel panel panel-default">
+
+				<div class="participants_heading heading panel-heading">
+
+					<span> Info </span>
+					
+
+				</div>
+
+
+
+
+
+
+				<div class="chat_info_right panel-body">
+
+					{% if is_owner %}
+					<p class="admin_sign about_sign"> Admin
+					<!--	
+					<a role="button" href="#">
+						
+
+
+					</a>
+
+					-->
+
+					 </p>
+					<div class="chat_info_buttons">
+
+
+						<!--<button class="btn chat_room_info" type="button" data-toggle="modal" data-target="#myModal"><i style="font-size: 24px;" class="fa fa-info-circle" aria-hidden="true"></i></button>-->	
+
+
+						
+						{% if room.get_room_type == "Global Chat" %}
+
+
+						{% else %}
+
+						<button class="btn chat_room_info" type="button" data-toggle="modal" data-target="#adminPanel"> <i class="fa fa-cog fa-5" aria-hidden="true"></i></button>
+
+						{% endif %}
+
+
+						{% if room.get_room_type == "Topic" %}
+						{% if request.user == room.owner %}
+						<button id="delete_topic_{{room.id}}" class="btn chat_room_info" type="button"  data-toggle="modal" data-target="#delete_topic"> <i class="fa fa-times" aria-hidden="true"></i></button>
+						{% endif %}
+						{% elif room.get_room_type == "Local Chat" %}
+						<button id="delete_localchat_{room.id}" class="btn chat_room_info" type="button"  data-toggle="modal" data-target="#delete_localchat"> <i class="fa fa-times" aria-hidden="true"></i></button>
+
+						{% endif %}
+
+
+
+
+					</div>
+
+
+					<div>
+
+						<button type="button" class="button_black_bg btn btn-primary" data-toggle="modal" data-target="#newLocalChat">
+  						New Local Chat
+						</button>
+
+
+					</div>
+					<hr class="chat_info_right_hr">
+
+					{% endif %} 
+
+					
+
+
+					<div class="chat_info_right_avatar">
+
+						<img class="img-circle" src="{{room.get_absolute_url_for_avatar}}">
+
+					</div>
+
+					<div class="room_stats">
+
+						{% if room.get_room_type == "Topic" %}	
+
+
+						<a id="up_r_{{room.id}}" href="#" class="
+							{% if request.user in room.arrow_ups.all %}
+
+							red 
+
+							{% endif %}
+
+							small_arrow raise_topic" data-id="{{room.id}}"><span class="glyphicon glyphicon-arrow-up"></span> </a>
+
+							<span id="r_{{room.id}}"> {{room.score}} </span>
+
+							<a id="down_r_{{room.id}}" href="#" class="
+
+
+							{% if request.user in room.arrow_downs.all %}
+
+							black 
+
+							{% endif %}
+
+
+							small_arrow lower_topic" data-id="{{room.id}}"> <span class="glyphicon glyphicon-arrow-down"></span> </a>	
+
+
+
+						
+
+
+						{% elif room.get_room_type == "Local Chat" %}
+
+
+							<button id="localchat_button_r_{{room.id}}" class=" 
+
+
+											{% if request.user in room.participants.all %}
+
+											fav_button
+
+
+											{% else %}
+
+											fav_button_pale
+
+
+											{% endif %}
+
+
+
+										fav_localchat" data-id="{{room.id}}">
+											
+										<i class="fa fa-star" aria-hidden="true"></i>
+
+
+							</button>
+
+							<span class="fav_localchat_span"  id="number_of_favs_r_{{room.id}}"> {{room.get_number_of_participants}} </span>
+
+
+						{% else %}
+
+						<span> {{room.chatgroup.get_number_of_members}}&nbsp;<i class="fa fa-user" aria-hidden="true"></i> </span>
+
+
+
+						{% endif %}
+
+
+
+
+					</div>
+
+
+					<hr class="chat_info_right_hr">
+
+
+					<div class="chat_info_right_about">
+
+						<p class="about_sign"> About </p>
+
+						<span> 
+
+
+						{% if room.get_room_type == "Global Chat"%}	
+
+						{{room.chatgroup.about}}
+
+						{% else %}
+
+						{{room.about}} 
+
+						{% endif %}
+						</span>
+
+					</div>
+
+
+					<hr class="chat_info_right_hr">
+
+
+					<div class="participants">
+
+						<p class="participants_sign about_sign"> Participants </p>
+
+						{% for participant in room.current_participants.all %}
+
+						{% if participant.id != request.user.id %}
+
+
+
+
+					<div class="participant">
+
+
+						<div class="participant_avatar">
+
+							<a href="{{participant.profile.get_absolute_url}}">
+
+
+								<img class="img-circle" src="{{participant.profile.get_absolute_url_for_avatar}}" height="30px" width="30px">
+
+
+							</a>
+
+						</div>
+
+
+						<div class="participant_info">
+							
+							<a href="{{participant.profile.get_absolute_url}}"><span> {{participant.username}} </span></a>
+
+
+						</div>
+
+						<div style="clear:both"> </div>
+
+						
+						<div style="clear:both"> </div>
+
+
+
+					</div>
+
+					{% endif %}
+
+
+					{% endfor %}
+
+					
+
+					</div>
+
+					<!--
+
+					<div class="participants">
+
+					{% for participant in room.current_participants.all %}
+
+					{% if participant.id != request.user.id %}
+
+
+
+
+					<div class="participant">
+
+
+						<a href="{{participant.profile.get_absolute_url}}" class="pull-left">
+
+
+							<img class="img-circle" src="{{participant.profile.get_absolute_url_for_avatar}}" height="30px" width="30px">
+
+
+						</a>
+
+
+
+						<a href="{{participant.profile.get_absolute_url}}"><h5> {{participant.username}} </h5></a>
+
+
+
+						<hr>
+
+
+
+					</div>
+
+					{% endif %}
+
+
+					{% endfor %}
+
+
+					</div>
+
+					-->
+
+
+				</div>
+
+
+
+
+
+
+
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="myModal" class="modal" role="dialog">
+									  <div class="modal-dialog modal-lg">
+
+										<!-- Modal content-->
+											<div class="modal-content">
+
+
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal"> &times; </button>
+													<h4 class="modal-title"> <span id="roomName"> {{room.get_name}} </span> ({{room.get_room_type}})</h4>
+												</div>
+
+
+											  <div class="modal-body">
+
+												<h3> About </h3>
+
+												  <p id="roomAbout">{{ room.about }} </p>
+
+
+
+
+													{% if room.get_room_type == "Local Chat" %}
+
+													<h3> Add to favourites </h3>
+													
+													{% if user_is_authenticated %}
+													<a class="add_to_fav" href="#" data-id="{{room.id}}"> <span class="star glyphicon glyphicon-star"></span> </a>
+
+													<span id="number_of_favs_{{room.id}}" class="number_of_favs"> {{room.get_number_of_participants}}</span>
+
+													{% else %}
+
+													<p> Please sign in to be able to add this localchat to your favorites
+
+													</p>	
+
+													{% endif %}
+
+
+
+
+												  <h3> Members </h3>
+
+												  {% for participant in room.participants.all%}
+
+												 <div class="participant">
+
+
+													<a class="pull-left">
+
+														<img class="img-circle" src="{{participant.profile.get_absolute_url_for_avatar}}" height="30px" width="30px">
+
+
+													</a>
+
+
+
+													<h5>  {{participant.username}}
+
+													</h5>
+
+													<!--<hr>-->
+
+
+
+												</div>
+
+												  {% endfor %}
+
+
+												{% endif %}
+
+
+
+
+											  </div>
+
+											  <!--<div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											  </div> -->
+										</div>
+
+								  </div>
+</div>
+
+
+
+
+
+<div id="adminPanel" class="modal" role="dialog">
+
+
+	<div class="modal-dialog modal-lg">
+
+
+		<div class="modal-content">
+
+
+			<div class="modal-header">
+
+
+				<button type="button" class="close" data-dismiss="modal"> &times; </button>
+				<h4 class="modal-title"> {{room.get_name}} ({{room.get_room_type}}) Admin Panel</h4>
+
+			</div>
+
+
+
+			<div class="modal-body">
+
+
+				<form method="post" enctype="multipart/form-data"> {% csrf_token %}
+
+				  <div class="form-group">
+					<label for="exampleInputName"> Chat Name </label>
+					<input type="text" class="form-control" id="exampleInputName" name="name" aria-describedby="changename" placeholder="Change Chat Name">
+
+				  </div>
+
+
+
+				  <div class="form-group">
+					<label for="exampleInputAbouts">About Chat</label>
+					<input type="text" class="form-control" id="exampleInputAbout" name="about" placeholder="Change About">
+				  </div>
+
+
+
+				<div class="form-group">
+					<div class="form-check">
+					  <label class="form-check-label">
+						<input name="is_hidden" class="form-check-input" type="checkbox"
+
+						{% if room.is_hidden%}
+
+						checked
+
+						{% endif %}
+
+
+						>Is hidden
+					  </label>
+					</div>
+ 				 </div>
+
+
+				<div class="form-group">
+					<div class="form-check">
+					  <label class="form-check-label">
+						<input name="is_private" class="form-check-input" type="checkbox"
+
+
+						{% if room.is_private%}
+
+						checked
+
+						{% endif %}
+
+
+
+						>Is private
+					  </label>
+					</div>
+ 				 </div>
+
+
+				<div class="form-group">
+					<label for="exampleFormControlFile1">Avatar</label>
+					<input name="avatar" type="file" class="form-control-file" id="exampleFormControlFile1">
+					<small id="avatarHelp" class="form-text text-muted">Currently: {{room.avatar}}</small>
+  				</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				  <button type="submit" class="btn btn-primary">Submit Changes</button>
+
+
+				</form>
+
+
+
+			</div>
+
+
+
+
+
+
+
+
+
+		</div>
+
+
+
+
+
+	</div>
+
+
+
+
+
+</div>
+
+
+
+<div id="newLocalChat" class="modal" role="dialog">
+
+
+
+
+
+	<div class="modal-dialog modal-lg">
+
+
+		<div class="modal-content">
+
+
+			<div class="modal-header">
+
+
+
+				<button type="button" class="close" data-dismiss="modal"> &times; </button>
+				<h4 class="modal-title">New Local Chat</h4>
+
+
+
+			</div>
+
+
+
+			<div class="modal-body">
+
+
+
+
+
+
+				<form action="{% url 'create-local-chat' chatgroup_id=chatgroup_id %}" id="createLocalChat" method="post" enctype="multipart/form-data"> {% csrf_token %}
+
+					  <div class="form-group">
+						<label for="newLocalChatName"> Local Chat Name </label>
+						<input name="name" type="text" id="newLocalChatName" class="form-control" aria-describedby="changename" placeholder="Local Chat Name">
+
+					  </div>
+
+
+
+					  <div class="form-group">
+						<label for="newLocalChatAbout">About Chat</label>
+						<input name="about" type="text" class="form-control" id="newLocalChatAbout" placeholder="About">
+					  </div>
+
+
+
+					<div class="form-group">
+						<div class="form-check">
+						  <label class="form-check-label">
+							<input name="is_hidden" id="localChatIsHidden" class="form-check-input" type="checkbox">Is hidden
+						  </label>
+						</div>
+					 </div>
+
+
+					<div class="form-group">
+						<div class="form-check">
+						  <label class="form-check-label">
+							<input name="is_private" id="localChatIsPrivate" class="form-check-input" type="checkbox">Is private
+						  </label>
+						</div>
+					 </div>
+
+
+					<div class="form-group">
+						<label for="localChatAvatar">Avatar</label>
+						<input name="avatar" type="file" class="form-control-file" id="localChatAvatar">
+
+					</div>
+
+
+					<input name="chatgroup_id" type="hidden" value="{{chatgroup.id}}"/>
+
+
+
+
+					<button type="submit" class="btn btn-primary">Submit</button>
+
+
+				</form>
+
+
+
+
+
+
+
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</div>
+
+
+
+	</div>
+
+
+
+
+</div>
+
+
+<div class="modal fade" id="delete_localchat" tabindex="-1" role="dialog" aria-labelledby="delete_localchat" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="followers_header modal-header">
+
+
+	      		<span class="followers_title modal-title">Delete Localchat</span>
+	      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          			
+          			<span aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i></span>
+
+        		</button>
+
+
+
+	      	 </div>
+      <div class="modal-body">
+        <p>This localchat will be deleted and you'll no longer be able to find it. You can also edit this localchat if you just want to change something.
+		If you didn't create this localchat, we can help you secure your account.</p>
+      </div>
+      <div class="modal-footer">
+        <button data-id="{{room.id}}" id="delete_localchat_{{room.id}}" type="button" class="delete_localchat button_black_bg btn btn-primary">Delete Localchat</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="delete_topic" tabindex="-1" role="dialog" aria-labelledby="delete_topic" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="followers_header modal-header">
+
+
+	      		<span class="followers_title modal-title">Delete Topic</span>
+	      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          			
+          			<span aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i></span>
+
+        		</button>
+
+
+
+	      	 </div>
+      <div class="modal-body">
+        <p>This topic will be deleted and you'll no longer be able to find it. You can also edit this topic if you just want to change something.
+		If you didn't create this topic, we can help you secure your account.</p>
+      </div>
+      <div class="modal-footer">
+        <button data-id="{{room.id}}" id="delete_topic_{{room.id}}" type="button" class="delete_topic button_black_bg btn btn-primary">Delete Topic</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<input id="usernameTheRequestUser" type="hidden" value="{% if user_is_authenticated %}
+{{request.user.username}}
+{% endif  %}"/>
+<input id="avatarOfTheRequestUser" type="hidden" value="{% if user_is_authenticated %}
+{{request_user_avatar}}
+{% endif  %}"/>
+
+
+
+<script type="text/javascript" src='{% static "interactive/reconnecting-websocket/reconnecting-websocket.js" %}'></script>
+
+<script type="text/javascript" src='{% static "interactive/chat.js" %}'></script>
+<script type="text/javascript" src='{% static "interactive/load_new_messages.js" %}'></script>
+<script type="text/javascript" src='{% static "interactive/file_upload.js" %}'></script>
+<script type="text/javascript" src='{% static "interactive/autosize.js" %}'></script>
+<script type="text/javascript" src='{% static "interactive/main.js" %}'></script>
+
+<script type="text/javascript" src='{% static "chats/js/chat_message_file_upload.js" %}'></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+

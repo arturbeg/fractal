@@ -1,0 +1,175 @@
+{% for message in messages %}
+
+
+
+					<div class="msg">
+
+					{% if message.get_message_type == "flag" %}	
+					<!--
+						<!-- Displaying the flag message in here
+						{% if message.flag == "ws_connect" %}
+
+
+						<span class="text-center flag_message"> {{message.user.username}} joined the chat</span>
+
+						{% elif message.flag == "ws_disconnect" %}
+
+						<span class="text-center flag_message"> {{message.user.username}} left the chat</span>
+						
+
+						{% endif %}
+
+						<!-- Later on might only display the flags for the past 24 hours  
+
+					-->
+					{% else %}	
+
+					<a class="pull-left">
+
+
+						<img class="img-circle" src="{{message.user.profile.get_absolute_url_for_avatar}}" height="40px" width="40px" >
+
+					</a>
+
+					<h5><a href="{{message.user.profile.get_absolute_url}}">{{message.user.username}}</a>
+
+
+					<span class="time">
+
+						{{message.formatted_timestamp}}
+
+
+					</span>
+
+
+
+					</h5>
+
+					{% if message.get_message_type == "text"%}
+					<p class="msg_body">
+
+							{{message.text|urlize}}
+
+						<!--<span>     Dislikes: {{message.get_number_of_dislikes}}</span> -->
+
+
+
+
+
+						{% if request.user.is_authenticated %}
+
+							
+
+							<button type="button" name="{{message.id}}" class="like fa" >
+
+								{% if request.user in message.likers.all %}
+
+								<i class="red_heart fa fa-heart" aria-hidden="true"></i>
+
+								
+
+								{% else %}
+
+								<i class="fa fa-heart-o" aria-hidden="true"></i>
+
+								
+
+								{% endif %}
+
+							</button>
+
+
+							<span id="{{message.id}}" style="margin-left: 2px;" class="number_of_likes"> {{message.get_number_of_likes}}</span>
+
+
+
+
+							{% if message.user.id == request.user.id%}
+
+								{% if message.post %}
+
+								<input type="button" name="{{message.id}}" class="share fa" value="&#xf064;" />
+
+								{% else %}
+
+									<input type="button" name="{{message.id}}" class="half_opacity share fa" value="&#xf064;" />
+
+
+								{% endif %}
+							{% endif %}
+
+						{% endif %}
+
+
+
+
+
+							<!--<span class="heart glyphicon glyphicon-heart"> <span class="number_of_likes"> 420 </span> </span> -->
+
+
+					</p>
+
+					{% elif message.get_message_type == "photo"  %}
+
+					<img class="uploaded_chat_image" src="{{message.photo.url}}">
+
+					{% if request.user.is_authenticated %}
+
+							
+
+							<button type="button" name="{{message.id}}" class="like fa" >
+
+								{% if request.user in message.likers.all %}
+
+								<i class="red_heart fa fa-heart" aria-hidden="true"></i>
+
+								
+
+								{% else %}
+
+								<i class="fa fa-heart-o" aria-hidden="true"></i>
+
+								
+
+								{% endif %}
+
+							</button>
+
+
+							<span id="{{message.id}}" style="margin-left: 2px;" class="number_of_likes"> {{message.get_number_of_likes}}</span>
+
+
+
+
+							{% if message.user.id == request.user.id%}
+
+								{% if message.post %}
+
+								<input type="button" name="{{message.id}}" class="share fa" value="&#xf064;" />
+
+								{% else %}
+
+									<input type="button" name="{{message.id}}" class="half_opacity share fa" value="&#xf064;" />
+
+
+								{% endif %}
+							{% endif %}
+
+						{% endif %}
+
+
+
+
+					{% endif %}
+					{% endif %}
+
+
+
+
+
+					</div>
+
+						<div style="clear:both"> </div>
+
+
+{% endfor %}

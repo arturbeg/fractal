@@ -1,0 +1,89 @@
+<div class="modal-dialog modal-lg">
+
+
+	    <div class="modal-content">
+	      
+
+
+	      	<div class="followers_header modal-header">
+
+
+	      		<span class="followers_title modal-title">Followers</span>
+	      		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          			
+          			<span aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i></span>
+
+        		</button>
+
+
+
+	      	 </div>
+
+
+	      	 <div class="followers_body modal-body">
+        	
+	      	 	{% for follower in followers%}
+
+
+        		<div class="follower_item"> 
+
+
+
+        			<img class="follower_avatar img-circle" src="{{follower.profile.get_absolute_url_for_avatar}}" height="32px" width="32px">
+
+
+        			<div class="follower_info">
+
+        			<a href="{{follower.profile.get_absolute_url}}"><span> {{follower.username}} </span></a>
+
+        			</div>
+
+
+        			<button id="follow_a_user_{{follower.profile.id}}" class="follow_button_modal follow_a_user btn" data-id="{{follower.profile.id}}">
+
+
+
+						{% if request.user in follower.profile.followers.all %}
+
+						Unfollow
+
+						{% else %}
+
+						Follow
+
+						{% endif %}
+
+
+					</button>
+
+
+
+
+        			<div style="clear:both"> </div>
+
+
+
+
+
+        		</div>
+
+        		{% endfor %}
+
+
+
+
+      		 </div>
+
+
+
+
+
+
+	    </div>
+
+
+
+  </div>
+
+
+

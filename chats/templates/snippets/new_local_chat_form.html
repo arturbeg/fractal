@@ -1,0 +1,33 @@
+<h2> New Local Chat</h2>
+
+
+<form method="post">
+
+{% csrf_token %}
+
+
+
+
+{% for field in form %}
+			<div class="form-group">
+      <p>
+
+        <label> {{field.label_tag}}</label>
+
+        {{ field }}
+
+
+
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+		</div>
+    {% endfor %}
+
+
+    <button type="submit">Create</button>
+
+</form>
+
+

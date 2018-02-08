@@ -1,0 +1,113 @@
+{% extends 'chats/base.html' %}
+
+
+
+{% block title %}{{chat_group.name}} {% endblock %}
+
+
+
+
+
+{%block content%}
+
+ <div class="row">
+
+    <div class="col-xs-1"> </div>
+
+
+    <div class="col-xs-10">
+
+
+    <div class="c-g-i">
+
+
+      <div class="pull-left">
+
+      <img class="img-circle" src="{{chat_group.avatar.url}}">
+
+
+      </div>
+
+      <div class="info">
+
+
+      <div class="main-info">
+
+      <h4> {{chat_group.name}}
+
+      <button class="follow-btn-big btn"> Follow </button>
+
+
+
+
+      </h4>
+
+      <button data-url="chatgroup/follow/{{chat_group.id}}" class="follow-btn btn" type="button"> Follow </button>
+
+
+
+
+
+      </div>
+
+      <div class="clear"> </div>
+
+      <div class="other-info">
+
+        <div class="group-stats">
+
+        <span class="followers"> <span> 500 </span> followers </span>
+        <span class="local-chats"> <span> 25 </span> local chats </span>
+        <span class="topics"> <span> 1.5K </span> topics </span>
+
+        </div>
+
+
+        <div class="group-about">
+          <p>
+
+
+            {{chat_group.about}}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="clear-medium"> </div>
+      </div>
+
+
+
+
+    </div>
+    </div>
+
+
+    <div class="col-xs-1"> </div>
+
+
+
+  </div>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
