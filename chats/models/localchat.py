@@ -1,0 +1,2 @@
+class LocalChat(Room):
+	
