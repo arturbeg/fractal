@@ -1165,23 +1165,3 @@ def redirect_to_trending_topics(request):
     return HttpResponseRedirect(reverse("trending-topics"))
 
 
-
-    
-
-'''
-
-
-
-
-
-def edit_profile(request):
-
-    profile_id = request.POST.get("id")
-
-
-
-
-    return HttpResponseRedirect(profile.get_absolute_url())
-
-
-'''

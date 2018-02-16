@@ -2,7 +2,7 @@ class Room(models.Model):
 	chatgroup = models.ForeignKey(ChatGroup, on_delete=models.CASCADE)  # the parent chat group
     name = models.CharField(max_length=200)
     about = models.CharField(max_length=200)
-    describtion = models.TextField()
+    describtion = models.TextField(blank=True)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="topic_avatar", blank=True)
 
@@ -13,6 +13,7 @@ class Room(models.Model):
     online_participants = models.ManyToManyField(User, blank=True)
 
 
+    # is_hidden and is_private will be added later
     # No methods for now -> need to pin down the structure of the database tables
 
 

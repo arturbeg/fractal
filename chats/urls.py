@@ -165,4 +165,4 @@ urlpatterns = [
 
 ]
 
-#url(r'^chatgroup/follow$', CharGroupFollowToggle.as_view(), name='chatgroup-follow'),
+

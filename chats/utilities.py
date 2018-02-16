@@ -16,6 +16,7 @@ def unique_label_generator(instance, new_slug=None):
     """
     This is for a Django project and it assumes your instance
     has a model with a label field and a name character (char) field.
+    
     """
     if new_slug is not None:
         label = new_slug

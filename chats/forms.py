@@ -5,13 +5,6 @@ from .models import ChatGroup, Topic, LocalChat, Profile
 from django.core.files.images import get_image_dimensions
 
 
-
-
-#class ProfileCreateForm(forms.ModelForm):
- #   class Meta:
-  #      model = Profile
-   #     fields = ['user']
-
 class LocalChatCreateForm(forms.ModelForm):
     class Meta:
         model = LocalChat
@@ -74,49 +67,3 @@ class ProfileEditForm(forms.ModelForm):
         model = Profile
 
         fields = ['about', 'avatar']
-      
-    #def __init__(self, *args, **kwargs):
-     #   user_id = kwargs.pop('user_id', '')
-      #  super(ProfileEditForm, self).__init__(*args, **kwargs)
-       # self.fields['user'] = forms.ModelChoiceField(queryset=User.objects.get(id=user_id))  
-
-
-
-
-'''
-
-
-
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control'}))
-
-    class Meta:
-        model = User
-        fields = ['email', 'username', 'password']
-        widgets = {
-                'email': TextInput(attrs={'placeholder': 'Email', 'class': 'form-control'}),
-                'username': TextInput(attrs={'placeholder': 'Username','class': 'form-control'}),
-
-
-
-        }
-
-
-class LoginForm(forms.ModelForm):
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control'}))
-
-
-    class Meta:
-        model = User
-        fields = ['username', 'password']
-        widgets = {
-
-                'username': TextInput(attrs={'placeholder': 'Username','class': 'form-control'}),
-
-
-
-        }
-
-
-
-'''

@@ -55,13 +55,12 @@ class Profile(models.Model):
         return reverse('profile', kwargs={'pk': self.pk})
 
     def get_absolute_url_for_avatar(self):
-        #print(self.avatar is None)
+        
         if not self.avatar:
-            #print("This user has not provided an avatar")
 
             try:
 
-                #return reverse("static", kwargs={'path': "chats/default-img/default-user.jpg"})
+
                 return static('chats/default-img/default-user.jpg')
 
             except:
@@ -69,8 +68,7 @@ class Profile(models.Model):
                 print(str(sys.exc_info()))    
 
         else:
-            #print(self.avatar)
-            #return  reverse("media", kwargs={'path': self.avatar})
+            
             return self.avatar.url
 
 
