@@ -1,6 +1,12 @@
+from django.db import models
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
+
+
+
 class Profile(models.Model):
    
-   	# Media Upload To -> decide how to store media files 
+    # Media Upload To -> decide how to store media files 
     user 		= models.OneToOneField(User, on_delete=models.CASCADE)
     followers 	= models.ManyToManyField(User, related_name="is_following")
     about 		= models.CharField(max_length=200, blank=True)
@@ -18,7 +24,7 @@ class Profile(models.Model):
         return self.user.username
 
 
-   	def get_absolute_url(self):
+    def get_absolute_url(self):
         return reverse('profile', kwargs={'pk': self.pk})
         
 

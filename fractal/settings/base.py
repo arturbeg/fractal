@@ -141,7 +141,6 @@ SITE_ID = 1
 INSTALLED_APPS = [
     # other apps
     'notifications',
-    'channels',
     'interactive',
     'chats',
     # AllAuth apps
@@ -207,17 +206,6 @@ ROOT_URLCONF = 'fractal.urls'
 
 WSGI_APPLICATION = 'fractal.wsgi.application'
 
-
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-        },
-        "ROUTING": "fractal.routing.channel_routing",
-    },
-}
 
 
 MEDIA_URL = 'media/'

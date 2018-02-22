@@ -1,6 +1,5 @@
 # The packages that the components require to function
 from django.db import models
-from chats.models import ChatGroup, LocalChat, Topic, GlobalChat
 from django.conf import settings
 from django.urls import reverse
 from django.db.models.signals import post_save
@@ -12,9 +11,8 @@ User = settings.AUTH_USER_MODEL
 
 
 # The components of the database
-from .room import *
-from .topic import *
-from .localchat import *
-from .chatgroup import *
-from .profile import *
-from .globalchat import *
+from .localchat import LocalChat
+from .topic import Topic
+from .chatgroup import ChatGroup
+from .profile import Profile
+from .globalchat import GlobalChat
