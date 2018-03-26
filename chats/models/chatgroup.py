@@ -22,8 +22,4 @@ class ChatGroup(models.Model):
 	def __str__(self):
 		return self.name
 
-	
-	def get_api_url(self, request=None):
-		return api_reverse("chatgroup-rud", kwargs={'pk':self.pk}, request=request)
-
 
