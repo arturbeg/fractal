@@ -140,7 +140,6 @@ SITE_ID = 1
 # Rewriting the installed apps variable
 INSTALLED_APPS = [
     # other apps
-    'notifications',
     'interactive',
     'chats',
     # AllAuth apps
