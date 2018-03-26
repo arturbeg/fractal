@@ -4,7 +4,7 @@ from .serializers import UserSerializer
 from rest_framework import generics, mixins
 from rest_framework.decorators import detail_route, list_route
 from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
-from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializer
+from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializer, GlobalChatSerializer, ProfileSerializer
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 
@@ -59,12 +59,18 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 			return Response({'status': 'chatgroup followed'})
 
 			
-
 # User View Set
 class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+# Profile View Set
+
+class ProfileViewSet(viewsets.ModelViewSet):
+	serializer_class = ProfileSerializer
+	queryset = Profile.objects.all()
 
 
 # Topic View Set
@@ -194,18 +200,42 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 			return Response({"status":"localchat added to online_participants"})			
 
 
-
-
 # GlobalChat View Set
+class GlobalChatViewSet(viewsets.ModelViewSet):
+	serializer_class = GlobalChatSerializer
+	queryset = GlobalChat.objects.all()
+
+	# Custom Router Urls
+
+	@detail_route(methods=['post', 'get'])
+	def save(self, request, *args, **kwargs):
+		user = request.user
+		globalchat = self.get_object()
+
+		if globalchat.saves.filter(id=user.id).exists():
+			globalchat.saves.remove(user)
+			return Response({"status":"globalchat removed from saves"})
+		else:
+			globalchat.saves.add(user)
+			return Response({"status":"globalchat added to saves"})
 
 
-# Message View Set
+
+	@detail_route(methods=['post', 'get'])
+	def participate(self, request, *args, **kwargs):
+		user = request.user
+		globalchat = self.get_object()
+
+		if globalchat.online_participants.filter(id=user.id).exists():
+			globalchat.online_participants.remove(user)
+			return Response({"status":"globalchat removed from online_participants"})
+		else:
+			globalchat.online_participants.add(user)
+			return Response({"status":"globalchat added to online_participants"})			
 
 
-# Post View Set
 
 
-# PostComment View Set
 
 
-# Notification View Set
+

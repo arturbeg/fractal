@@ -13,6 +13,7 @@ User = settings.AUTH_USER_MODEL
 # The components of the database
 from .localchat import LocalChat
 from .topic import Topic
+from .globalchat import GlobalChat
 from .chatgroup import ChatGroup
 from .profile import Profile
-from .globalchat import GlobalChat
+

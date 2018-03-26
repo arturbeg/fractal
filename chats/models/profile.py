@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_save
 User = settings.AUTH_USER_MODEL
 
 
@@ -53,4 +54,10 @@ class Profile(models.Model):
     def get_number_of_following(self):
         return self.user.is_following.count()
         
+
+def post_save_user_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        profile, is_created = Profile.objects.get_or_create(user=instance)
+
+post_save.connect(post_save_user_receiver, sender=User)
 

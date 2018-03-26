@@ -7,11 +7,6 @@ def random_string_generator(size=10, chars=string.ascii_lowercase + string.digit
     return ''.join(random.choice(chars) for _ in range(size))
 
 
-
-
-
-
-
 def unique_label_generator(instance, new_slug=None):
     """
     This is for a Django project and it assumes your instance
@@ -32,7 +27,3 @@ def unique_label_generator(instance, new_slug=None):
                 )
         return unique_label_generator(instance, new_slug=new_slug)
     return label
-
-
-
-

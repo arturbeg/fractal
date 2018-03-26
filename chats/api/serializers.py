@@ -1,8 +1,22 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile 
+from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
 # Can have a LocalChat serializer class for the Topic and LocalChat (for now keep it simple)
+
+
+
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = Profile
+		fields = ['user', 'followers', 'about', 'avatar', 'timestamp']
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+
+	class Meta:
+		model  = User
+		fields = ('url', 'username', 'email')
+
 
 class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -24,11 +38,9 @@ class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 class LocalChatSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = LocalChat
-		fields = fields = [ 'url', 'id', 'name', 'owner', 'about', 'describtion', 'label', 'timestamp', 'avatar', 'online_participants', 'saves']
+		fields = [ 'url', 'id', 'name', 'owner', 'about', 'describtion', 'label', 'timestamp', 'avatar', 'online_participants', 'saves']
 
 	
-
-
 class TopicSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Topic
@@ -44,8 +56,9 @@ class TopicSerializer(serializers.HyperlinkedModelSerializer):
 		return value	
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-
+class GlobalChatSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
-		model  = User
-		fields = ('url', 'username', 'email')
+		model = GlobalChat
+		fields = [ 'url', 'id', 'chatgroup', 'label', 'online_participants']
+
+
