@@ -1,42 +1,83 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from chats.models import Topic
+from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile 
+# Can have a LocalChat serializer class for the Topic and LocalChat (for now keep it simple)
 
-'''
-Serializers allow complex data such as
-querysets and model instances to be converted to
-native Python datatypes that cna be easily rendered into JSON,
-XML or other content types.
+class ChatGroupSerializer(serializers.ModelSerializer):
+	members = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
+	owner = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+	url = serializers.SerializerMethodField(read_only=True)
 
-Serializers also provide decerialization, allowing parsed data to be
-converted back into complex types, after validating the incoming data
+	class Meta:
+		model = ChatGroup
+		fields = ('url', 'pk', 'owner', 'name', 'about', 'members', 'describtion', 'label', 'timestamp', 'avatar')
 
-Work very similarly to Django's Form and ModelForm classes
+		# owner, name, about, describtion, members, timestamp, avatar, label -> model fields
+	def get_url(self, obj):
+		return self.context.get("request")
 
-There are 2 main uses of serializers:
+	# A ChatGroup should have a unique name	
+	def validate_name(self, value):
+		qs = ChatGroup.objects.filter(name__iexact=value)
+		if self.instance:
+			qs = qs.exclude(pk=self.instance.pk)
+		if qs.exists():
+			raise serializers.ValidationError("This ChatGroup name has already been used!")	
+		return value
+						
+class LocalChatSerializer(serializers.ModelSerializer):
+	online_participants = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
+	owner = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+	url = serializers.SerializerMethodField(read_only=True)
+	saves = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
+	#chatgroup = serializers.HyperlinkedRelatedField(view_name='chatgroup-rud')
+	# use serializermethod field or some shit
 
-1) Get model data from the db in JSON
-2) Use them like forms to validate date and create instances of a model
+	class Meta:
+		model = LocalChat
+		fields = fields = [ 'url', 'pk', 'name', 'owner', 'about', 'describtion', 'label', 'timestamp', 'avatar', 'online_participants', 'saves']
+		# chatgroup, name, about, describtion, owner, avatar, saves, timestamp, label, online_participants
 
-Different types of serializers -> focus on HyperlinkedModelSerializers
-
-HyperlinkedModelSerializers build on top fo ModelSerializers by using URL
-instead of pk values to define relations.
-
-'''
-
-
-
-class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
-		owner = serializers.ReadOnlyField(source='owner.username')
-		members = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
+	def get_url(self, obj):
+		request = self.context.get("request")
+		return obj.get_api_url(request=request)
+	
 
 
-		class Meta:
-			model = Topic
-			fields = ('url', 'name', 'about', 'describtion', 'id', 'label', 'timestamp', 'avatar')
 
+class TopicSerializer(serializers.ModelSerializer):
+	
+	arrow_ups = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
+	arrow_downs = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
+	owner = serializers.HyperlinkedRelatedField(view_name='user-detail', read_only=True)
+	url = serializers.SerializerMethodField(read_only=True)
+	#chatgroup = serializers.HyperlinkedRelatedField(view_name='chatgroup-rud')
+	# Need to destinguish between those
+
+	# Okay have a pause here -> more theory
+	class Meta:
+		model = Topic
+		fields = [ 'url', 'chatgroup', 'pk', 'name', 'owner', 'about', 'describtion', 'label', 'timestamp', 'avatar', 'arrow_ups', 'arrow_downs']
+		read_only_fields = ['pk', 'owner']
+
+
+
+	# Getting the url here for the Serializer
+	
+	def get_url(self, obj):
+		request = self.context.get("request")
+		return obj.get_api_url(request=request)	
+	
+	# Below is an example of how a validation of a field would work -> will delete later
+
+	def validate_name(self, value):
+		qs = Topic.objects.filter(name__iexact=value)
+		if self.instance:
+			qs = qs.exclude(pk=self.instance.pk)
+		if qs.exists():
+			raise serializers.ValidationError("This name has already been used")	
+		return value	
 
 
 
@@ -51,13 +92,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 		# the URL will be displayed instead of a simple pk
 
 
-class TopicSerializer(serializers.HyperlinkedModelSerializer):
-	
-	arrow_ups = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
-	arrow_downs = serializers.HyperlinkedRelatedField(many=True, view_name='user-detail', read_only=True)
-	# Need to destinguish between those
-
-	# Okay have a pause here -> more theory
-	#class Meta:
-		#model = Topic
-
+# A serializer does 2 things
+# Converts to JSON
+# validations for data passed

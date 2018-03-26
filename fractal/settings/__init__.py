@@ -2,5 +2,5 @@
 # deleting all the migrations files, have a separate src for 2 different heroku apps
 
 
-from .production import *
-#from .base import *
+#from .production import *
+from .base import *

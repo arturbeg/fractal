@@ -1,6 +1,7 @@
 from django.db import models
 from .chatgroup import ChatGroup
 from django.conf import settings
+from rest_framework.reverse import reverse as api_reverse
 User = settings.AUTH_USER_MODEL
 
 
@@ -18,6 +19,15 @@ class LocalChat(models.Model):
 
     online_participants = models.ManyToManyField(User, blank=True, related_name="online_participants")
 
+
+    def __str__(self):
+        return self.name
+
+    def get_api_url(self, request=None):
+        return api_reverse("localchat-rud", kwargs={"pk":self.pk}, request=request)
+            
+
+    
 
     # need to fully undertand how the related_name attribute functions
     # is_hidden and is_private will be added later

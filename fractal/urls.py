@@ -10,7 +10,7 @@ urlpatterns = [
 
     url(r'^accounts/', include('allauth.urls')),
 
-    url(r'^api/', include('chats.api.urls')),
+    url(r'^api/', include('chats.api.urls'), name="api"),
 
 ]
 
