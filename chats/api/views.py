@@ -8,6 +8,10 @@ from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializ
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 
+# Filtering related imports
+import django_filters.rest_framework
+from rest_framework.filters import SearchFilter, OrderingFilter
+
  
 # Viewsets -> combine the logic for a set of related views in a single class
 
@@ -29,6 +33,7 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 
 	serializer_class = ChatGroupSerializer
 	queryset = ChatGroup.objects.all()
+	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
 	def perform_create(self, serializer):
 		serializer.save(owner=self.request.user)
@@ -62,8 +67,10 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 # User View Set
 class UserViewSet(viewsets.ModelViewSet):
 
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset 			= User.objects.all()
+    serializer_class 	= UserSerializer
+    filter_backends 	= (SearchFilter,)
+    search_fields 		= ('username', 'email')
 
 
 # Profile View Set
@@ -71,6 +78,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
 	serializer_class = ProfileSerializer
 	queryset = Profile.objects.all()
+	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
 
 # Topic View Set
@@ -89,6 +97,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 	'''
 	serializer_class = TopicSerializer
 	queryset = Topic.objects.all()
+	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
 	def perform_create(self, serializer):
 
@@ -166,6 +175,7 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 
 	serializer_class = LocalChatSerializer
 	queryset = LocalChat.objects.all()
+	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
 	def perform_create(self, serializer):
 		# Configure this separately -> unique-label-generator
@@ -204,6 +214,7 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 class GlobalChatViewSet(viewsets.ModelViewSet):
 	serializer_class = GlobalChatSerializer
 	queryset = GlobalChat.objects.all()
+	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
 	# Custom Router Urls
 
