@@ -1,9 +1,17 @@
+from rest_framework import filters
+
 # Custom generic filtering
 
-# Django generic exmaple -> will be tweaked
-class IsOwnerFilterBackend(filters.BaseFilterBackend):
+# Some issues occur when applied, default backends get applied
+class FollowersCountFilterBackend(filters.BaseFilterBackend):
     """
-    Filter that only allows users to see their own objects.
+   	Filter that applies ordering according to the followers_count
     """
     def filter_queryset(self, request, queryset, view):
-        return queryset.filter(owner=request.user)
+        
+        queryset = sorted(queryset, key=lambda x: x.followers_count(), reverse=True)
+
+        return queryset
+
+
+

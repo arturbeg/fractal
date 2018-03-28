@@ -486,43 +486,6 @@ class TrendingLocalChatsList(ListView):
 
 
 
-def profile_followers(request, pk, *args, **kwargs):
-    template_name = "chats/profile_followers.html"
-    profile = Profile.objects.get(pk=pk)
-    print(profile.user.username)
-
-    queryset = profile.followers.all()
-    print(queryset)
-
-    c = {"followers" : queryset}
-    return render(request, template_name, c)
-
-
-
-
-def profile_following(request, pk, *args, **kwargs):
-    template_name = "chats/profile_following.html"
-    profile = Profile.objects.get(pk=pk)
-
-    queryset = profile.user.is_following.all()
-    print(queryset)
-
-    c = {"following": queryset}
-    return render(request, template_name, c)
-
-
-
-
-
-def profile_chatgroups(request, pk, *args, **kwargs):
-    template_name = "chats/profile_chatgroups.html"
-    profile = Profile.objects.get(pk=pk)
-
-    queryset = ChatGroup.objects.filter(members__id=profile.user.id)
-
-    c = {"chatgroups": queryset}
-    return render(request, template_name, c)
-
 
 
 

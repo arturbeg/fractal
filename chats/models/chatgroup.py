@@ -22,3 +22,10 @@ class ChatGroup(models.Model):
 	def __str__(self):
 		return self.name
 
+	#@property
+	#Read more about the property decorator
+	def followers_count(self):
+		return self.members.count()	
+		
+
+

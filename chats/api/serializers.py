@@ -9,7 +9,9 @@ from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Profile
-		fields = ['user', 'followers', 'about', 'avatar', 'timestamp']
+		fields = ['url', 'id', 'user', 'followers', 'about', 'avatar', 'timestamp']
+
+		read_only_fields = ['url', 'user', 'id', 'timestamp']
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
 
@@ -21,18 +23,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 
 	class Meta:
-		model = ChatGroup
-		fields = ('url', 'id', 'owner', 'name', 'about', 'members', 'describtion', 'label', 'timestamp', 'avatar')
-
-
-	# A ChatGroup should have a unique name	(slug will be used for it)
-	def validate_name(self, value):
-		qs = ChatGroup.objects.filter(name__iexact=value)
-		if self.instance:
-			qs = qs.exclude(pk=self.instance.pk)
-		if qs.exists():
-			raise serializers.ValidationError("This ChatGroup name has already been used!")	
-		return value
+		model 				= ChatGroup
+		fields 				= ('url', 'id', 'owner', 'name', 'about', 'members', 'describtion', 'label', 'timestamp', 'avatar')
+		read_only_fields	= ('owner', 'url', 'id', 'label', 'timestamp')
 
 						
 class LocalChatSerializer(serializers.HyperlinkedModelSerializer):

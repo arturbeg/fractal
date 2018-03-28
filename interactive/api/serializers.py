@@ -14,21 +14,28 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 		fields = ['url', 'pk', 'user', 'globalchat', 'localchat', 'topic', 'text', 'photo', 
 		'file', 'flag', 'likers', 'dislikers', 'timestamp']
 
+		read_only_fields = ['user', 'pk', 'user', 'timestamp']
+
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Post
 		fields = ['url', 'pk', 'message', 'likers', 'dislikers', 'timestamp']
 
-
+		read_only_fields = ['url', 'pk', 'timestamp']
 
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Message
-		fields = ['url', 'pk', 'user', 'post', 'text', 'likers', 'dislikers', 'timestamp']		
+		fields = ['url', 'pk', 'user', 'post', 'text', 'likers', 'dislikers', 'timestamp']	
+
+		read_only_fields = ['url', 'pk', 'user', 'timestamp']	
 
 
 class NotificationSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Notification
 		fields = ['url', 'pk', 'text', 'user', 'user2', 'message', 'post', 'postcomment', 'timestamp']
+
+		# user, user2?
+		read_only_fields = ['url', 'pk', 'timestamp']

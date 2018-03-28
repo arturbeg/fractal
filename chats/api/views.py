@@ -4,49 +4,40 @@ from .serializers import UserSerializer
 from rest_framework import generics, mixins
 from rest_framework.decorators import detail_route, list_route
 from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
-from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializer, GlobalChatSerializer, ProfileSerializer
+from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializer, GlobalChatSerializer, ProfileSerializer, UserSerializer
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 
 # Filtering related imports
-import django_filters.rest_framework
 from rest_framework.filters import SearchFilter, OrderingFilter
+#from .filters import FollowersCountFilterBackend
 
+
+from chats.models.utilities import unique_label_generator
  
-# Viewsets -> combine the logic for a set of related views in a single class
-
-# Viewsets are registered with a router class -> automatically determines the urlconf 
-
-
-# The app uses ModelViewSet class
 # Later on have a module to store separate ViewSets
 
 
 # ChatGroupViewSet
 class ChatGroupViewSet(viewsets.ModelViewSet):
-	''' 
-	A viewset for viewing and editing ChatGroup instances
-		1. Need search functionality for the chatgroup table
-		2. Follow ChatGroup
-	'''
+
+	serializer_class 	= ChatGroupSerializer
+	queryset 			= ChatGroup.objects.all()
+	
+	# Ordering and Searching
+	filter_backends 	= [SearchFilter, OrderingFilter]
+	search_fields 		= ['name', 'about', 'describtion', 'label']
 
 
-	serializer_class = ChatGroupSerializer
-	queryset = ChatGroup.objects.all()
-	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+	# use get_queryset when run out of options; or apply a filter from filters.py
 
 	def perform_create(self, serializer):
 		serializer.save(owner=self.request.user)
-
-	def get_queryset(self):
-		qs = ChatGroup.objects.all()
-		query = self.request.GET.get("q")
-		if query is not None:
-			qs = qs.filter(name__icontains=query)
-		return qs
+	
 
 	def post(self, request, *args, **kwargs):
 		return self.create(request, *args, **kwargs)	
+
 
 	# Below making extra actions for routing
 
@@ -61,16 +52,19 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 			return Response({'status': 'chatgroup unfollowed'})
 		else:
 			chatgroup.members.add(user)
-			return Response({'status': 'chatgroup followed'})
+			return Response({'status': 'chatgroup followed'})		
 
 			
+		
 # User View Set
 class UserViewSet(viewsets.ModelViewSet):
 
     queryset 			= User.objects.all()
     serializer_class 	= UserSerializer
-    filter_backends 	= (SearchFilter,)
-    search_fields 		= ('username', 'email')
+    
+    # Single query search	
+    filter_backends 	= [SearchFilter, OrderingFilter]
+    search_fields 		= ['username', 'email', 'profile__about']
 
 
 # Profile View Set
@@ -78,7 +72,49 @@ class UserViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
 	serializer_class = ProfileSerializer
 	queryset = Profile.objects.all()
-	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+	# Mirrors the one above	
+	filter_backends 	= [SearchFilter, OrderingFilter]
+	search_fields 		= ['user__username', 'user__email', 'about']
+
+    # Extra actions for routing
+
+	# Chatgroups that are followed by the user
+	@detail_route()
+	def chatgroups(self, request, *args, **kwargs):
+		profile = self.get_object()
+		queryset = ChatGroup.objects.filter(members__id=profile.user.id)
+
+		serializer = ChatGroupSerializer(queryset, many=True, context={'request':request})
+		return Response(serializer.data)
+
+	# Fix the fact that the followers (User model) and following (Profile model)	
+	@detail_route()
+	def followers(self, request, *args, **kwargs):
+		profile = self.get_object()
+		queryset = profile.followers.all()
+
+		serializer = UserSerializer(queryset, many=True, context={'request':request})
+		return Response(serializer.data)
+
+
+	@detail_route()
+	def following(self, request, *args, **kwargs):
+		profile = self.get_object()
+		queryset = profile.user.is_following.all()
+
+		serializer = self.get_serializer(queryset, many=True, context={'request':request})
+		return Response(serializer.data)		
+
+
+
+
+
+
+
+
+
+
 
 
 # Topic View Set
@@ -95,9 +131,11 @@ class TopicViewSet(viewsets.ModelViewSet):
 		Need a validation check that the same user doesn't
 		have the same topic upvoted and downvoted at the same time
 	'''
-	serializer_class = TopicSerializer
-	queryset = Topic.objects.all()
-	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+	serializer_class 	= TopicSerializer
+	queryset 			= Topic.objects.all()
+	filter_backends 	= [SearchFilter, OrderingFilter]
+	search_fields 		= ['name', 'about', 'describtion', 'label']
+
 
 	def perform_create(self, serializer):
 
@@ -175,7 +213,10 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 
 	serializer_class = LocalChatSerializer
 	queryset = LocalChat.objects.all()
-	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+	filter_backends 	= [SearchFilter, OrderingFilter]
+	search_fields 		= ['name', 'about', 'describtion', 'label']
+
 
 	def perform_create(self, serializer):
 		# Configure this separately -> unique-label-generator
@@ -214,7 +255,12 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 class GlobalChatViewSet(viewsets.ModelViewSet):
 	serializer_class = GlobalChatSerializer
 	queryset = GlobalChat.objects.all()
-	filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+	filter_backends 	= [SearchFilter, OrderingFilter]
+	search_fields 		= ['chatgroup__name', 'chatgroup__about', 'chatgroup__describtion']
+
+	
+
 
 	# Custom Router Urls
 
