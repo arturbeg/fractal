@@ -5,7 +5,9 @@ from rest_framework import generics, mixins
 from rest_framework.decorators import detail_route, list_route
 from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
 from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializer, GlobalChatSerializer, ProfileSerializer, UserSerializer
-from .permissions import IsOwnerOrReadOnly
+
+from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyUserClass
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 # Filtering related imports
@@ -28,6 +30,8 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['name', 'about', 'describtion', 'label']
 
+	# permissions (custom permissions applied to the extra routing actions)
+	permission_classes	= [IsOwnerOrReadOnly]
 
 	# use get_queryset when run out of options; or apply a filter from filters.py
 
@@ -41,7 +45,7 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 
 	# Below making extra actions for routing
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def follow(self, request, *args, **kwargs):
 
 		user = request.user
@@ -66,9 +70,12 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends 	= [SearchFilter, OrderingFilter]
     search_fields 		= ['username', 'email', 'profile__about']
 
+    permission_classes	= [IsOwnerOrReadOnlyUserClass]
+
+
+
 
 # Profile View Set
-
 class ProfileViewSet(viewsets.ModelViewSet):
 	serializer_class = ProfileSerializer
 	queryset = Profile.objects.all()
@@ -76,6 +83,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 	# Mirrors the one above	
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['user__username', 'user__email', 'about']
+
+	permission_classes	= [IsOwnerOrReadOnly]
 
     # Extra actions for routing
 
@@ -109,14 +118,6 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 
-
-
-
-
-
-
-
-
 # Topic View Set
 class TopicViewSet(viewsets.ModelViewSet):
 
@@ -135,6 +136,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 	queryset 			= Topic.objects.all()
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['name', 'about', 'describtion', 'label']
+	permission_classes	= [IsOwnerOrReadOnly]
 
 
 	def perform_create(self, serializer):
@@ -143,7 +145,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 
 	# Extra actions for routing
 	
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def upvote(self, request, *args, **kwargs):
 		user = request.user
 		topic = self.get_object()
@@ -162,7 +164,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 
 
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def downvote(self, request, *args, **kwargs):
 		user = request.user
 		topic = self.get_object()
@@ -181,7 +183,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 
 
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def save(self, request, *args, **kwargs):
 		user = request.user
 		topic = self.get_object()
@@ -195,7 +197,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 
 
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def participate(self, request, *args, **kwargs):
 		user = request.user
 		topic = self.get_object()
@@ -211,11 +213,13 @@ class TopicViewSet(viewsets.ModelViewSet):
 # LocalChat View Set
 class LocalChatViewSet(viewsets.ModelViewSet):
 
-	serializer_class = LocalChatSerializer
-	queryset = LocalChat.objects.all()
+	serializer_class 	= LocalChatSerializer
+	queryset 			= LocalChat.objects.all()
 
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['name', 'about', 'describtion', 'label']
+
+	permission_classes	= [IsOwnerOrReadOnly]
 
 
 	def perform_create(self, serializer):
@@ -224,7 +228,7 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 
 	# Custom Router Urls
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def save(self, request, *args, **kwargs):
 		user = request.user
 		localchat = self.get_object()
@@ -238,7 +242,7 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 
 
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def participate(self, request, *args, **kwargs):
 		user = request.user
 		localchat = self.get_object()
@@ -259,12 +263,13 @@ class GlobalChatViewSet(viewsets.ModelViewSet):
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['chatgroup__name', 'chatgroup__about', 'chatgroup__describtion']
 
+	permission_classes	= [IsOwnerOrReadOnly]
 	
 
 
 	# Custom Router Urls
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def save(self, request, *args, **kwargs):
 		user = request.user
 		globalchat = self.get_object()
@@ -278,7 +283,7 @@ class GlobalChatViewSet(viewsets.ModelViewSet):
 
 
 
-	@detail_route(methods=['post', 'get'])
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def participate(self, request, *args, **kwargs):
 		user = request.user
 		globalchat = self.get_object()

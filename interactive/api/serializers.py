@@ -16,13 +16,36 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 
 		read_only_fields = ['user', 'pk', 'user', 'timestamp']
 
+	# validate that the message has content	
+	def validate(self, data):
+		photo = data['photo']
+		text  = data['text']
+		file  = data['photo']
+		flag  = data['text']
+
+		if photo is None and text is None and file is None and flag is None:
+			raise serializers.ValidationError('The message must contain some nonempty content type')
+
+		return data	
+
+	# if the message is of the text type, make sure it's nonempty
+
+	def validate_text(self, value):
+		if value.isspace():
+			raise serializers.ValidationError('The message must contain some nonempty content type')
+
+		return value	
+
+
+
+
 
 class PostSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Post
 		fields = ['url', 'pk', 'message', 'likers', 'dislikers', 'timestamp']
 
-		read_only_fields = ['url', 'pk', 'timestamp']
+		read_only_fields = ['url', 'pk', 'timestamp', 'message']
 
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:

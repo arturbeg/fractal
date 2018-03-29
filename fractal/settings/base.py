@@ -32,12 +32,31 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'interactive',
+    'chats',
+
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # REST Framework
+    'rest_framework',
+
+    # Need to delete
+
+    # AllAuth apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # the providers
+
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.vk',
 ]
 
 MIDDLEWARE = [
@@ -125,81 +144,10 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-
-
-
-
-
 
 
 SITE_ID = 1
-
-# Rewriting the installed apps variable
-INSTALLED_APPS = [
-    # other apps
-    'interactive',
-    'chats',
-    # AllAuth apps
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # the providers
-
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.vk',
-
-    
-    'django.contrib.sites',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    # REST Framework
-
-    'rest_framework'
-
-    # Infitine pagination
-
-    #'endless_pagination'
-]
-
-
-
-
-SOCIALACCOUNT_PROVIDERS = \
-    {'facebook':
-       {'METHOD': 'oauth2',
-        'SCOPE': ['email','public_profile', 'user_friends'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'FIELDS': [
-            'id',
-            'email',
-            'name',
-            'first_name',
-            'last_name',
-            'verified',
-            'locale',
-            'timezone',
-            'link',
-            'gender',
-            'updated_time'],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': lambda request: 'kr_KR',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v2.4'}}
-
-
-
-#facebook
-SOCIAL_AUTH_FACEBOOK_KEY = '100483844026512'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET ='c92a831939a9984e0b2a8387f17e5341' #app key        
+        
 
 ROOT_URLCONF = 'fractal.urls'
 
@@ -220,13 +168,13 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = 'media/'
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'chats/media')
 
-# Will change this later
 
 
+# Amazon settings
 AWS_ACCESS_KEY_ID = 'AKIAJY7MCEP7D7AIHLCQ'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'fractal-artur'
@@ -235,14 +183,13 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 
-
 AWS_LOCATION_MEDIA = 'media'
-
 
 MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION_MEDIA)
 DEFAULT_FILE_STORAGE = 'fractal.storage_backends.MediaStorage'
 
 
+# REST_FRAMEWORK SETTINGS
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',

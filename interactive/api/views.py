@@ -12,15 +12,22 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .serializers import MessageSerializer, PostSerializer, PostCommentSerializer, NotificationSerializer
 
+
+from .permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
+
 # Configure post saves + add post_save signals where necessary
+# Reconfigure permissions if necessary
 
 class MessageViewSet(viewsets.ModelViewSet):
 	serializer_class 	= MessageSerializer
 	queryset 			= Message.objects.all()
 
 	filter_backends 	= [SearchFilter, OrderingFilter]
-	search_fields 		= ['text']	
+	search_fields 		= ['text']
 
+	permission_classes	= [IsOwnerOrReadOnly]	
+	
 
 class PostViewSet(viewsets.ModelViewSet):
 	serializer_class 	= PostSerializer
@@ -29,6 +36,8 @@ class PostViewSet(viewsets.ModelViewSet):
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['message__text']
 
+	permission_classes	= [IsOwnerOrReadOnly]
+
 
 
 class PostCommentViewSet(viewsets.ModelViewSet):
@@ -36,7 +45,9 @@ class PostCommentViewSet(viewsets.ModelViewSet):
 	queryset 			= PostComment.objects.all()
 
 	filter_backends 	= [SearchFilter, OrderingFilter]
-	search_fields 		= ['text']	
+	search_fields 		= ['text']
+
+	permission_classes	= [IsOwnerOrReadOnly]	
 
 
 class NotificationViewSet(viewsets.ModelViewSet):

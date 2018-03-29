@@ -14,7 +14,9 @@ class GlobalChat(models.Model):
     online_participants = models.ManyToManyField(User, blank=True, related_name='globalchat_online_participants')
     saves 				= models.ManyToManyField(User, blank=True, related_name='globalchat_saves')
 
-
+    @property
+    def owner(self):
+        return self.chatgroup.user
 
 # Signal that generates a new GlobalChat when a Chatgroup is created
 def post_save_chatgroup_receiver(sender, instance, created, *args, **kwargs):
