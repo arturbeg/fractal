@@ -5,10 +5,14 @@ from rest_framework import generics, mixins
 from rest_framework.decorators import detail_route, list_route
 from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
 from .serializers import TopicSerializer, ChatGroupSerializer, LocalChatSerializer, GlobalChatSerializer, ProfileSerializer, UserSerializer
-
+from .pagination import CustomPageNumberPagination
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyUserClass
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import (
+	LimitOffsetPagination,
+	PageNumberPagination
+	)
 
 # Filtering related imports
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -16,32 +20,32 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 from chats.models.utilities import unique_label_generator
+
+
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from rest_auth.registration.views import SocialLoginView
+from rest_auth.registration.views import SocialConnectView
+
  
 # Later on have a module to store separate ViewSets
 
 
 # ChatGroupViewSet
 class ChatGroupViewSet(viewsets.ModelViewSet):
-
 	serializer_class 	= ChatGroupSerializer
 	queryset 			= ChatGroup.objects.all()
-	
-	# Ordering and Searching
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['name', 'about', 'describtion', 'label']
-
-	# permissions (custom permissions applied to the extra routing actions)
 	permission_classes	= [IsOwnerOrReadOnly]
+	pagination_class	= CustomPageNumberPagination
 
 	# use get_queryset when run out of options; or apply a filter from filters.py
 
 	def perform_create(self, serializer):
 		serializer.save(owner=self.request.user)
 	
-
 	def post(self, request, *args, **kwargs):
 		return self.create(request, *args, **kwargs)	
-
 
 	# Below making extra actions for routing
 
@@ -59,18 +63,13 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 			return Response({'status': 'chatgroup followed'})		
 
 			
-		
-# User View Set
 class UserViewSet(viewsets.ModelViewSet):
-
     queryset 			= User.objects.all()
-    serializer_class 	= UserSerializer
-    
-    # Single query search	
+    serializer_class 	= UserSerializer	
     filter_backends 	= [SearchFilter, OrderingFilter]
     search_fields 		= ['username', 'email', 'profile__about']
-
     permission_classes	= [IsOwnerOrReadOnlyUserClass]
+    pagination_class	= CustomPageNumberPagination
 
 
 
@@ -78,15 +77,11 @@ class UserViewSet(viewsets.ModelViewSet):
 # Profile View Set
 class ProfileViewSet(viewsets.ModelViewSet):
 	serializer_class = ProfileSerializer
-	queryset = Profile.objects.all()
-
-	# Mirrors the one above	
+	queryset = Profile.objects.all()	
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['user__username', 'user__email', 'about']
-
 	permission_classes	= [IsOwnerOrReadOnly]
-
-    # Extra actions for routing
+	pagination_class	= CustomPageNumberPagination
 
 	# Chatgroups that are followed by the user
 	@detail_route()
@@ -137,6 +132,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['name', 'about', 'describtion', 'label']
 	permission_classes	= [IsOwnerOrReadOnly]
+	pagination_class	= CustomPageNumberPagination
 
 
 	def perform_create(self, serializer):
@@ -220,6 +216,7 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 	search_fields 		= ['name', 'about', 'describtion', 'label']
 
 	permission_classes	= [IsOwnerOrReadOnly]
+	pagination_class	= CustomPageNumberPagination
 
 
 	def perform_create(self, serializer):
@@ -264,6 +261,7 @@ class GlobalChatViewSet(viewsets.ModelViewSet):
 	search_fields 		= ['chatgroup__name', 'chatgroup__about', 'chatgroup__describtion']
 
 	permission_classes	= [IsOwnerOrReadOnly]
+	pagination_class	= CustomPageNumberPagination
 	
 
 
@@ -297,7 +295,10 @@ class GlobalChatViewSet(viewsets.ModelViewSet):
 
 
 
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
 
 
-
+class FacebookConnect(SocialConnectView):
+	adapter_class = FacebookOAuth2Adapter
 

@@ -46,17 +46,15 @@ INSTALLED_APPS = [
     # REST Framework
     'rest_framework',
 
-    # Need to delete
 
-    # AllAuth apps
+    'rest_auth',
+    #'rest_framework.authtoken',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
-    # the providers
+    'rest_auth.registration',
 
+    'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.vk',
 ]
 
 MIDDLEWARE = [
@@ -195,10 +193,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
 
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
+
+
+REST_USE_JWT = True
 
