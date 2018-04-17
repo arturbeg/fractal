@@ -22,9 +22,9 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from chats.models.utilities import unique_label_generator
 
 
-from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
-from rest_auth.registration.views import SocialLoginView
-from rest_auth.registration.views import SocialConnectView
+# from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+# from rest_auth.registration.views import SocialLoginView
+# from rest_auth.registration.views import SocialConnectView
 
  
 # Later on have a module to store separate ViewSets
@@ -36,8 +36,9 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 	queryset 			= ChatGroup.objects.all()
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['name', 'about', 'describtion', 'label']
-	permission_classes	= [IsOwnerOrReadOnly]
+	permission_classes  = [IsOwnerOrReadOnly]
 	pagination_class	= CustomPageNumberPagination
+	lookup_field		= 'label'
 
 	# use get_queryset when run out of options; or apply a filter from filters.py
 
@@ -70,18 +71,34 @@ class UserViewSet(viewsets.ModelViewSet):
     search_fields 		= ['username', 'email', 'profile__about']
     permission_classes	= [IsOwnerOrReadOnlyUserClass]
     pagination_class	= CustomPageNumberPagination
-
+    lookup_field		= 'username'
 
 
 
 # Profile View Set
 class ProfileViewSet(viewsets.ModelViewSet):
-	serializer_class = ProfileSerializer
-	queryset = Profile.objects.all()	
+	serializer_class 	= ProfileSerializer
+	queryset 			= Profile.objects.all()	
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['user__username', 'user__email', 'about']
-	permission_classes	= [IsOwnerOrReadOnly]
+	# TODO: change to IsOwnerOrReadOnly later
+	permission_classes  = [IsOwnerOrReadOnly]
 	pagination_class	= CustomPageNumberPagination
+	lookup_field		= 'label'
+
+
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
+	def follow(self, request, *args, **kwargs):
+		profile = self.get_object()
+		user = request.user
+
+		if profile.followers.filter(id=user.id).exists():
+			profile.followers.remove(user)
+			return Response({"status": "profile unfollowed"})
+		else:
+			profile.followers.add(user)
+			return Response({"status": "profile followed"})
+
 
 	# Chatgroups that are followed by the user
 	@detail_route()
@@ -105,11 +122,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
 	@detail_route()
 	def following(self, request, *args, **kwargs):
 		profile = self.get_object()
-		queryset = profile.user.is_following.all()
+		queryset = profile.is_following.all()
 
 		serializer = self.get_serializer(queryset, many=True, context={'request':request})
 		return Response(serializer.data)		
-
 
 
 
@@ -117,12 +133,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class TopicViewSet(viewsets.ModelViewSet):
 
 	'''
-		1. UpVote a Topic - done
-		2. Downvote a Topic - done
-		3. Save a Topic - done
-		4. Become a Topic Participant - done
-		5. Get Trending Topics (filters)
-		6. Get New Topics (filters)
+		1. Get Trending Topics (filters)
+		2. Get New Topics (filters)
 
 		Need a validation check that the same user doesn't
 		have the same topic upvoted and downvoted at the same time
@@ -133,6 +145,7 @@ class TopicViewSet(viewsets.ModelViewSet):
 	search_fields 		= ['name', 'about', 'describtion', 'label']
 	permission_classes	= [IsOwnerOrReadOnly]
 	pagination_class	= CustomPageNumberPagination
+	lookup_field		= 'label'
 
 
 	def perform_create(self, serializer):
@@ -217,6 +230,7 @@ class LocalChatViewSet(viewsets.ModelViewSet):
 
 	permission_classes	= [IsOwnerOrReadOnly]
 	pagination_class	= CustomPageNumberPagination
+	lookup_field		= 'label'
 
 
 	def perform_create(self, serializer):
@@ -262,6 +276,8 @@ class GlobalChatViewSet(viewsets.ModelViewSet):
 
 	permission_classes	= [IsOwnerOrReadOnly]
 	pagination_class	= CustomPageNumberPagination
+	lookup_field		= 'label'
+
 	
 
 
@@ -295,10 +311,10 @@ class GlobalChatViewSet(viewsets.ModelViewSet):
 
 
 
-class FacebookLogin(SocialLoginView):
-    adapter_class = FacebookOAuth2Adapter
+# class FacebookLogin(SocialLoginView):
+#     adapter_class = FacebookOAuth2Adapter
 
 
-class FacebookConnect(SocialConnectView):
-	adapter_class = FacebookOAuth2Adapter
+# class FacebookConnect(SocialConnectView):
+# 	adapter_class = FacebookOAuth2Adapter
 

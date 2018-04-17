@@ -15,6 +15,8 @@ class Profile(models.Model):
 
     timestamp 	= models.DateTimeField(auto_now_add=True)
 
+    label       = models.SlugField(unique=True) # redundunt -> delete later (owner didn't really work)
+
 
     # Some info about the REST API related to the Profile Class
 
@@ -28,8 +30,6 @@ class Profile(models.Model):
     @property
     def owner(self):
         return self.user
-
-
 
     def get_absolute_url(self):
         return reverse('profile', kwargs={'pk': self.pk})
@@ -54,16 +54,20 @@ class Profile(models.Model):
         return False
 
 
-    def get_number_of_followers(self):
+    def followers_count(self):
         return self.followers.count()
 
-    def get_number_of_following(self):
+    def following_count(self):
         return self.user.is_following.count()
+
+    def chatgroups_count(self):
+        return self.user.is_member.count()
+
         
 
 def post_save_user_receiver(sender, instance, created, *args, **kwargs):
     if created:
-        profile, is_created = Profile.objects.get_or_create(user=instance)
+        profile, is_created = Profile.objects.get_or_create(user=instance, label=instance.username)
 
 post_save.connect(post_save_user_receiver, sender=User)
 

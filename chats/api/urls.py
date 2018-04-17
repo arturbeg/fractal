@@ -1,7 +1,11 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 from . import views
-from .views import ChatGroupViewSet, UserViewSet, TopicViewSet, LocalChatViewSet, GlobalChatViewSet, ProfileViewSet
+from .views import (
+					ChatGroupViewSet, UserViewSet, 
+					TopicViewSet, LocalChatViewSet, 
+					GlobalChatViewSet, ProfileViewSet
+					)
 
 
 # Configuring the router

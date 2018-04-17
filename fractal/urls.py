@@ -5,10 +5,10 @@ from django.views.static import serve
 from django.conf.urls.static import static
 from django.conf.urls import include
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
-from chats.api.views import FacebookLogin, FacebookConnect
-from rest_auth.registration.views import (
-    SocialAccountListView, SocialAccountDisconnectView
-)
+# from chats.api.views import FacebookLogin, FacebookConnect
+# from rest_auth.registration.views import (
+#     SocialAccountListView, SocialAccountDisconnectView
+# )
 
 
 # Have a separate module for the accounts
@@ -24,21 +24,21 @@ urlpatterns = [
 
 	url(r'^rest-auth/', include('rest_auth.urls')),
 
-	url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+	# url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
 
-	url(r'^api-token-auth/', obtain_jwt_token),
+	url(r'^api/auth/token', obtain_jwt_token),
 
 	url(r'^api-token-refresh/', refresh_jwt_token),
 
 	url(r'^api-token-verify/', verify_jwt_token),
 
-	url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
+	# url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
 
-	url(r'^rest-auth/facebook/connect/$', FacebookConnect.as_view(), name='fb_connect'),
+	# url(r'^rest-auth/facebook/connect/$', FacebookConnect.as_view(), name='fb_connect'),
 
-    url(r'^socialaccounts/$', SocialAccountListView.as_view(), name='social_account_list'),
+ #    url(r'^socialaccounts/$', SocialAccountListView.as_view(), name='social_account_list'),
 
-    url(r'^socialaccounts/(?P<pk>\d+)/disconnect/$', SocialAccountDisconnectView.as_view(), name='social_account_disconnect'),    	
+ #    url(r'^socialaccounts/(?P<pk>\d+)/disconnect/$', SocialAccountDisconnectView.as_view(), name='social_account_disconnect'),    	
 ]
 
 

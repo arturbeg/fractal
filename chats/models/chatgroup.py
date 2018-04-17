@@ -9,7 +9,7 @@ class ChatGroup(models.Model):
 	owner 		= models.ForeignKey(User, on_delete=models.CASCADE)
 	name 		= models.CharField(max_length=200, blank=False)
 	about 		= models.CharField(max_length=200, blank=True)
-	describtion = models.TextField(blank=True)
+	description = models.TextField(blank=True)
 	members 	= models.ManyToManyField(User, blank=True, related_name="is_member")
 
 	timestamp 	= models.DateTimeField(auto_now_add=True)
@@ -22,10 +22,12 @@ class ChatGroup(models.Model):
 	def __str__(self):
 		return self.name
 
-	#@property
-	#Read more about the property decorator
 	def followers_count(self):
 		return self.members.count()	
 		
+	def topics_count(self):
+		return self.topic_chatgroup.all().count()
 
+	def localchats_count(self):
+		return self.localchat_chatgroup.all().count()		
 
