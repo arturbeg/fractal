@@ -26,7 +26,27 @@ class MessageViewSet(viewsets.ModelViewSet):
 	filter_backends 	= [SearchFilter, OrderingFilter]
 	search_fields 		= ['text']
 
-	permission_classes	= [IsOwnerOrReadOnly]	
+	permission_classes	= [IsOwnerOrReadOnly]
+	lookup_field		= 'id'	
+
+	def perform_create(self, serializer):
+		serializer.save(user=self.request.user)
+
+	def post(self, request, *args, **kwargs):
+		return self.create(request, *args, **kwargs)		
+
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
+	def like(self, request, *args, **kwargs):
+
+		user = request.user
+		message = self.get_object()
+
+		if message.likers.filter(id=user.id).exists():
+			message.likers.remove(user)
+			return Response({'status': 'message unliked'})
+		else:
+			message.likers.add(user)
+			return Response({'status': 'message liked'})	
 	
 
 class PostViewSet(viewsets.ModelViewSet):

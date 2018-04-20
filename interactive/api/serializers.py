@@ -7,26 +7,39 @@ from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
 # Interactive App models
 from interactive.models import Message, Post, PostComment, Notification
 
+from chats.api.serializers import UserSerializer
 
-class MessageSerializer(serializers.HyperlinkedModelSerializer):
+# TODO: change back to HyperLinked
+class MessageSerializer(serializers.ModelSerializer):
+	
+	likers_count 	= serializers.SerializerMethodField()	
+
 	class Meta:
 		model = Message
-		fields = ['url', 'pk', 'user', 'globalchat', 'localchat', 'topic', 'text', 'photo', 
-		'file', 'flag', 'likers', 'dislikers', 'timestamp']
+		# fields = ['url', 'pk', 'user', 'globalchat', 'localchat', 'topic', 'text', 'photo', 
+		# 'file', 'flag', 'likers', 'dislikers', 'timestamp']
 
-		read_only_fields = ['user', 'pk', 'user', 'timestamp']
+		# read_only_fields = ['user', 'pk', 'user', 'timestamp']
 
+		fields = ['pk', 'text', 'timestamp', 'user', 'topic', 'likers_count']
+
+		read_only_fields = ['pk', 'timestamp', 'user']
+
+		lookup_field = 'id'
+
+	def get_likers_count(self, obj):
+		return obj.likers_count()
 	# validate that the message has content	
-	def validate(self, data):
-		photo = data['photo']
-		text  = data['text']
-		file  = data['photo']
-		flag  = data['text']
+	# def validate(self, data):
+	# 	photo = data['photo']
+	# 	text  = data['text']
+	# 	file  = data['photo']
+	# 	flag  = data['text']
 
-		if photo is None and text is None and file is None and flag is None:
-			raise serializers.ValidationError('The message must contain some nonempty content type')
+	# 	if photo is None and text is None and file is None and flag is None:
+	# 		raise serializers.ValidationError('The message must contain some nonempty content type')
 
-		return data	
+	# 	return data	
 
 	# if the message is of the text type, make sure it's nonempty
 

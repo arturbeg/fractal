@@ -27,5 +27,11 @@ class Message(models.Model):
 	timestamp 		= models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 	
+	@property
+	def owner(self):
+		return self.user
+
+	def likers_count(self):
+		return self.likers.count()	
 
 	# Add the rest of the methods later (while working on the angular app)		
