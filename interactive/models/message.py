@@ -27,6 +27,11 @@ class Message(models.Model):
 	timestamp 		= models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 	
+
+	def __str__(self):
+		return self.topic.name + ' : ' + self.user.username + ' : ' + self.text
+
+
 	@property
 	def owner(self):
 		return self.user

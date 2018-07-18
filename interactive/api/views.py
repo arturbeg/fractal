@@ -35,6 +35,14 @@ class MessageViewSet(viewsets.ModelViewSet):
 	def post(self, request, *args, **kwargs):
 		return self.create(request, *args, **kwargs)		
 
+	def get_queryset(self, *args, **kwargs):
+		queryset_list = Message.objects.all()
+		query         = self.request.GET.get('topic')
+		if query:
+			queryset_list = Message.objects.filter(topic__label=query)	
+
+		return queryset_list	
+
 	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def like(self, request, *args, **kwargs):
 
@@ -46,7 +54,25 @@ class MessageViewSet(viewsets.ModelViewSet):
 			return Response({'status': 'message unliked'})
 		else:
 			message.likers.add(user)
-			return Response({'status': 'message liked'})	
+			return Response({'status': 'message liked'})
+
+
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
+	def share(self, request, *args, **kwargs):
+
+		user = request.user
+		message = self.get_object()
+
+		if Post.objects.filter(message=message).exists():
+			Post.objects.filter(message=message).delete()
+			return Response({'status': 'message unshared'}) 
+		else:
+			post = Post.objects.create(message=message)
+			post.save()
+			return Response({'status': 'message shared'}) 
+
+			
+
 	
 
 class PostViewSet(viewsets.ModelViewSet):

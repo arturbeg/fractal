@@ -24,6 +24,11 @@ class Topic(models.Model):
 	arrow_downs = models.ManyToManyField(User, blank=True, related_name='arrow_downs')
 
 
+	def __str__(self):
+		return self.name
+
+	def rating(self):
+		return self.arrow_ups.count() - self.arrow_downs.count()	
 
 # class Topic(LocalChat):
 	# chatgroup = models.ForeignKey(ChatGroup, on_delete=models.CASCADE, related_name="topics")

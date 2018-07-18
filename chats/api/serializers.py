@@ -132,6 +132,38 @@ class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 		return obj.localchats_count()				
 
 
+class TopicSerializer(serializers.HyperlinkedModelSerializer):
+	
+	# Difference between the arrow_ups and arrow_downs
+	rating 					= serializers.SerializerMethodField()
+	# Use chatgroup URL later
+	chatgroup 				= ChatGroupSerializer()	
+
+
+	class Meta:
+		model 				= Topic
+		#fields 				= [ 'url', 'chatgroup', 'id', 'name', 'owner', 'about', 'description', 'label', 'timestamp', 'avatar', 'arrow_ups', 'arrow_downs', 'saves', 'online_participants']
+		fields 				= ['id', 'name', 'about', 'label', 'rating', 'chatgroup']
+		# read_only_fields 	= ['pk', 'owner']
+		lookup_field		= 'label'
+		# extra_kwargs		= {
+		# 	'url': 	 				{'lookup_field': 'label'},
+		# 	'chatgroup': 	 		{'lookup_field': 'label'},
+		# 	'owner': 				{'lookup_field': 'username'},
+		# 	'online_participants':  {'lookup_field': 'username'},
+		# 	'saves':  				{'lookup_field': 'username'},
+		# 	'arrow_ups':  			{'lookup_field': 'username'},
+		# 	'arrow_downs':  		{'lookup_field': 'username'},
+		# }	
+
+
+	def get_rating(self, obj):
+		return obj.rating()
+
+
+
+
+
 						
 class LocalChatSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
@@ -146,21 +178,7 @@ class LocalChatSerializer(serializers.HyperlinkedModelSerializer):
 			'saves':  				{'lookup_field': 'username'},
 		}
 	
-class TopicSerializer(serializers.HyperlinkedModelSerializer):
-	class Meta:
-		model 				= Topic
-		fields 				= [ 'url', 'chatgroup', 'id', 'name', 'owner', 'about', 'description', 'label', 'timestamp', 'avatar', 'arrow_ups', 'arrow_downs', 'saves', 'online_participants']
-		read_only_fields 	= ['pk', 'owner']
-		lookup_field		= 'label'
-		extra_kwargs		= {
-			'url': 	 				{'lookup_field': 'label'},
-			'chatgroup': 	 		{'lookup_field': 'label'},
-			'owner': 				{'lookup_field': 'username'},
-			'online_participants':  {'lookup_field': 'username'},
-			'saves':  				{'lookup_field': 'username'},
-			'arrow_ups':  			{'lookup_field': 'username'},
-			'arrow_downs':  		{'lookup_field': 'username'},
-		}		
+	
 
 	# def validate_name(self, value):
 	# 	qs = Topic.objects.filter(name__iexact=value)

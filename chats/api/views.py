@@ -154,6 +154,10 @@ class TopicViewSet(viewsets.ModelViewSet):
 
 	# Extra actions for routing
 	
+
+	
+
+	
 	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	def upvote(self, request, *args, **kwargs):
 		user = request.user
@@ -217,6 +221,10 @@ class TopicViewSet(viewsets.ModelViewSet):
 		else:
 			topic.online_participants.add(user)
 			return Response({"status":"topic added to online_participants"})
+
+	# # get list of messages of the topic		
+	# @detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
+	# def messages(self)			
 
 
 # LocalChat View Set

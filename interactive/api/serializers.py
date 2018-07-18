@@ -7,12 +7,18 @@ from chats.models import ChatGroup, GlobalChat, LocalChat, Topic, Profile
 # Interactive App models
 from interactive.models import Message, Post, PostComment, Notification
 
-from chats.api.serializers import UserSerializer
+from chats.api.serializers import UserSerializer, ProfileSerializer
+
+
 
 # TODO: change back to HyperLinked
 class MessageSerializer(serializers.ModelSerializer):
 	
 	likers_count 	= serializers.SerializerMethodField()	
+	topic 			= serializers.SlugRelatedField(slug_field='label', queryset=Topic.objects.all())
+	# sender -> same as user, but expanded version
+	#user			= UserSerializer()
+	sender			= serializers.SerializerMethodField()
 
 	class Meta:
 		model = Message
@@ -20,15 +26,21 @@ class MessageSerializer(serializers.ModelSerializer):
 		# 'file', 'flag', 'likers', 'dislikers', 'timestamp']
 
 		# read_only_fields = ['user', 'pk', 'user', 'timestamp']
+		# sender is the profile of the user presented in a nested mannder
+		fields = ['id', 'text', 'timestamp', 'topic', 'user', 'sender', 'likers_count']
 
-		fields = ['pk', 'text', 'timestamp', 'user', 'topic', 'likers_count']
-
-		read_only_fields = ['pk', 'timestamp', 'user']
+		read_only_fields = ['pk', 'timestamp']
 
 		lookup_field = 'id'
 
 	def get_likers_count(self, obj):
 		return obj.likers_count()
+
+	def get_sender(self, obj):
+		profile = obj.user.profile
+		profileSerializer = ProfileSerializer(profile)
+		profileSerializerData = profileSerializer.data
+		return profileSerializerData	
 	# validate that the message has content	
 	# def validate(self, data):
 	# 	photo = data['photo']
@@ -52,13 +64,14 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 
-
-class PostSerializer(serializers.HyperlinkedModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Post
 		fields = ['url', 'pk', 'message', 'likers', 'dislikers', 'timestamp']
 
 		read_only_fields = ['url', 'pk', 'timestamp', 'message']
+
+
 
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
