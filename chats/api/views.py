@@ -216,12 +216,25 @@ class TopicViewSet(viewsets.ModelViewSet):
 		topic = self.get_object()
 
 		if topic.online_participants.filter(id=user.id).exists():
-			topic.online_participants.remove(user)
-			return Response({"status":"topic removed from online_participants"})
+			
+			return Response({"status":"no changes to online_participants"})
 		else:
 			topic.online_participants.add(user)
 			return Response({"status":"topic added to online_participants"})
+				
 
+	@detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
+	def leave(self, request, *args, **kwargs):
+		user = request.user
+		topic = self.get_object()
+
+		if topic.online_participants.filter(id=user.id).exists():
+			topic.online_participants.remove(user)
+			return Response({"status":"topic removed from online_participants"})
+		else:
+			return Response({"status":"no changes to online_participants"})	
+
+					
 	# # get list of messages of the topic		
 	# @detail_route(methods=['post', 'get'], permission_classes = [IsAuthenticated])
 	# def messages(self)			

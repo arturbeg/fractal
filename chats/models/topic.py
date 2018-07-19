@@ -18,6 +18,7 @@ class Topic(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 	label = models.SlugField(unique=True) # Unique way to name a topic/localchat in the URL
 
+	# change to Profile if needed
 	online_participants = models.ManyToManyField(User, blank=True, related_name="topic_online")
 
 	arrow_ups 	= models.ManyToManyField(User, blank=True, related_name='arrow_ups')
@@ -28,7 +29,15 @@ class Topic(models.Model):
 		return self.name
 
 	def rating(self):
-		return self.arrow_ups.count() - self.arrow_downs.count()	
+		return self.arrow_ups.count() - self.arrow_downs.count()
+
+	# not elegant	
+	def participants(self):
+		participants = []
+		for participant in self.online_participants.all():
+			participants.append(participant.profile)
+		
+		return participants		
 
 # class Topic(LocalChat):
 	# chatgroup = models.ForeignKey(ChatGroup, on_delete=models.CASCADE, related_name="topics")

@@ -132,10 +132,11 @@ class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 		return obj.localchats_count()				
 
 
-class TopicSerializer(serializers.HyperlinkedModelSerializer):
+class TopicSerializer(serializers.ModelSerializer):
 	
 	# Difference between the arrow_ups and arrow_downs
 	rating 					= serializers.SerializerMethodField()
+	participants    		= serializers.SerializerMethodField()
 	# Use chatgroup URL later
 	chatgroup 				= ChatGroupSerializer()	
 
@@ -143,7 +144,7 @@ class TopicSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model 				= Topic
 		#fields 				= [ 'url', 'chatgroup', 'id', 'name', 'owner', 'about', 'description', 'label', 'timestamp', 'avatar', 'arrow_ups', 'arrow_downs', 'saves', 'online_participants']
-		fields 				= ['id', 'name', 'about', 'label', 'rating', 'chatgroup']
+		fields 				= ['id', 'name', 'about', 'label', 'rating', 'chatgroup', 'participants']
 		# read_only_fields 	= ['pk', 'owner']
 		lookup_field		= 'label'
 		# extra_kwargs		= {
@@ -159,6 +160,12 @@ class TopicSerializer(serializers.HyperlinkedModelSerializer):
 
 	def get_rating(self, obj):
 		return obj.rating()
+
+	def get_participants(self, obj):
+		participants = obj.participants()	
+		participantsSerializer = ProfileSerializer(participants, many=True)
+		participantsSerializerData = participantsSerializer.data
+		return participantsSerializerData
 
 
 
