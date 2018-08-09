@@ -61,7 +61,21 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 			return Response({'status': 'chatgroup unfollowed'})
 		else:
 			chatgroup.members.add(user)
-			return Response({'status': 'chatgroup followed'})		
+			return Response({'status': 'chatgroup followed'})
+
+	@detail_route(methods=['get'], permission_classes = [IsAuthenticated])
+	def topics(self, request, *args, **kwargs):
+		chatgroup = self.get_object()
+		queryset = Topic.objects.filter(chatgroup=chatgroup)
+		serializer = TopicSerializer(queryset, many=True, context={'request':request})
+
+		return Response(serializer.data)
+
+
+
+
+
+
 
 			
 class UserViewSet(viewsets.ModelViewSet):
@@ -99,6 +113,15 @@ class ProfileViewSet(viewsets.ModelViewSet):
 			profile.followers.add(user)
 			return Response({"status": "profile followed"})
 
+
+	@detail_route()
+	def topics(self, request, *args, **kwargs):
+		profile = self.get_object()
+		queryset = Topic.objects.filter(chatgroup__members__id=profile.user.id)
+
+		serializer = TopicSerializer(queryset, many=True, context={'request':request})
+
+		return Response(serializer.data)
 
 	# Chatgroups that are followed by the user
 	@detail_route()

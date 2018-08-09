@@ -111,9 +111,11 @@ class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 	topics_count		= serializers.SerializerMethodField()
 	localchats_count	= serializers.SerializerMethodField()
 
+	owner				= serializers.SerializerMethodField()
+
 	class Meta:
 		model 				= ChatGroup
-		fields 				= ['id', 'name', 'about', 'description', 'label', 'followers_count', 'topics_count', 'localchats_count']
+		fields 				= ['id', 'name', 'about', 'description', 'label', 'followers_count', 'topics_count', 'localchats_count', 'timestamp', 'owner']
 		read_only_fields	= ['id', 'label', 'followers_count']
 		lookup_field		= 'label'
 		# extra_kwargs		= {
@@ -129,14 +131,24 @@ class ChatGroupSerializer(serializers.HyperlinkedModelSerializer):
 		return obj.topics_count()
 
 	def get_localchats_count(self, obj):
-		return obj.localchats_count()				
+		return obj.localchats_count()	
+
+	def get_owner(self, obj):
+		owner = obj.ownerProfile() # getting the profile of the owner
+		ownerSerializer = ProfileSerializer(owner)
+		ownerSerializerData = ownerSerializer.data
+		return ownerSerializerData
+
 
 
 class TopicSerializer(serializers.ModelSerializer):
 	
+
+
 	# Difference between the arrow_ups and arrow_downs
 	rating 					= serializers.SerializerMethodField()
 	participants    		= serializers.SerializerMethodField()
+	most_recent_message		= serializers.SerializerMethodField()
 	# Use chatgroup URL later
 	chatgroup 				= ChatGroupSerializer()	
 
@@ -144,7 +156,7 @@ class TopicSerializer(serializers.ModelSerializer):
 	class Meta:
 		model 				= Topic
 		#fields 				= [ 'url', 'chatgroup', 'id', 'name', 'owner', 'about', 'description', 'label', 'timestamp', 'avatar', 'arrow_ups', 'arrow_downs', 'saves', 'online_participants']
-		fields 				= ['id', 'name', 'about', 'label', 'rating', 'chatgroup', 'participants']
+		fields 				= ['id', 'name', 'about', 'label', 'rating', 'chatgroup', 'participants', 'most_recent_message']
 		# read_only_fields 	= ['pk', 'owner']
 		lookup_field		= 'label'
 		# extra_kwargs		= {
@@ -157,6 +169,8 @@ class TopicSerializer(serializers.ModelSerializer):
 		# 	'arrow_downs':  		{'lookup_field': 'username'},
 		# }	
 
+	def get_most_recent_message(self, obj):
+		return obj.most_recent_message()	
 
 	def get_rating(self, obj):
 		return obj.rating()

@@ -29,5 +29,8 @@ class ChatGroup(models.Model):
 		return self.topic_chatgroup.all().count()
 
 	def localchats_count(self):
-		return self.localchat_chatgroup.all().count()		
+		return self.localchat_chatgroup.all().count()	
+
+	def ownerProfile(self):
+		return self.owner.profile		
 

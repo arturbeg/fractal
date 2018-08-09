@@ -31,6 +31,10 @@ class Topic(models.Model):
 	def rating(self):
 		return self.arrow_ups.count() - self.arrow_downs.count()
 
+	def most_recent_message(self):
+		message = self.topic_messages.all()[0]
+		return message.text 	
+
 	# not elegant	
 	def participants(self):
 		participants = []
