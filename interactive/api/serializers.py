@@ -65,13 +65,19 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+	
+	message = MessageSerializer()
+
 	class Meta:
 		model = Post
-		fields = ['url', 'pk', 'message', 'likers', 'dislikers', 'timestamp']
+		fields = ['message', 'timestamp']
 
 		read_only_fields = ['url', 'pk', 'timestamp', 'message']
 
 
+
+
+# Do later...
 
 class PostCommentSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:

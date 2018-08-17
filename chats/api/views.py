@@ -21,6 +21,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 from chats.models.utilities import unique_label_generator
 
+from interactive.models import Post
+from interactive.api.serializers import PostSerializer
 
 # from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 # from rest_auth.registration.views import SocialLoginView
@@ -70,6 +72,19 @@ class ChatGroupViewSet(viewsets.ModelViewSet):
 		serializer = TopicSerializer(queryset, many=True, context={'request':request})
 
 		return Response(serializer.data)
+
+	@detail_route(methods=['get'], permission_classes = [IsAuthenticated])
+	def followers(self, request, *args, **kwargs):
+		chatgroup = self.get_object()
+		queryset = chatgroup.followers()
+
+		serializer = ProfileSerializer(queryset, many=True, context={'request':request})
+
+
+
+		return Response(serializer.data)	
+
+		
 
 
 
@@ -132,6 +147,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 		serializer = ChatGroupSerializer(queryset, many=True, context={'request':request})
 		return Response(serializer.data)
 
+
 	# Fix the fact that the followers (User model) and following (Profile model)	
 	@detail_route()
 	def followers(self, request, *args, **kwargs):
@@ -148,8 +164,32 @@ class ProfileViewSet(viewsets.ModelViewSet):
 		queryset = profile.is_following.all()
 
 		serializer = self.get_serializer(queryset, many=True, context={'request':request})
-		return Response(serializer.data)		
+		return Response(serializer.data)	
 
+	@detail_route()
+	def posts(self, request, *args, **kwargs):
+		profile = self.get_object()
+		user = profile.user
+		queryset = Post.objects.filter(message__user=user)	
+
+
+		serializer = PostSerializer(queryset, many=True, context={'request': request})
+
+		return Response(serializer.data)
+
+	# recent activity posts	
+	@detail_route()
+	def activity(self, request, *args, **kwargs):
+		profile = self.get_object()
+		user = profile.user
+		
+		following = user.is_following.all()
+
+		queryset = Post.objects.filter(message__user__profile=following)
+
+		serializer = PostSerializer(queryset, many=True, context={'request': request})
+		
+		return 	Response(serializer.data)
 
 
 # Topic View Set

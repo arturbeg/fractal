@@ -32,5 +32,13 @@ class ChatGroup(models.Model):
 		return self.localchat_chatgroup.all().count()	
 
 	def ownerProfile(self):
-		return self.owner.profile		
+		return self.owner.profile
+
+	# not elegant -> defo change implementation	
+	def followers(self):
+		followers = []
+		for follower in self.members.all():
+			followers.append(follower.profile)
+		
+		return followers
 
